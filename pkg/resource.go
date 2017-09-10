@@ -16,13 +16,13 @@ package threatconnect
 
 import (
 	"net/http"
-	"net/url"
 	"errors"
 	"path"
 
 	log "github.com/Sirupsen/logrus"
 
 	"encoding/json"
+	"fmt"
 )
 
 //type TCResponse struct {
@@ -44,6 +44,9 @@ type TCResourcer interface {
 
 type TCResource struct {
 	TC        *ThreatConnectClient
+	//Prefix
+	//Path
+	//Postfix
 	RBase     string
 	RPath     string
 	path      string
@@ -54,30 +57,34 @@ type TCResource struct {
 	RResponse interface{}
 }
 
-func (r *TCResource) FullPath(path string) string {
-	baseURL, baseErr := url.Parse(r.RBase)
-	pathURL, pathErr := url.Parse(path)
-	if baseErr == nil && pathErr == nil {
-		return baseURL.ResolveReference(pathURL).String()
+//func (r *TCResource) FullPath(path string) string {
+//	baseURL, baseErr := url.Parse(r.RBase)
+//	pathURL, pathErr := url.Parse(path)
+//	if baseErr == nil && pathErr == nil {
+//		return baseURL.ResolveReference(pathURL).String()
+//	}
+//	return ""
+//}
+
+func (r *TCResource) Path(paths ...interface{}) *TCResource {
+	var spaths []string
+	for _, p := range paths {
+		spaths = append(spaths,fmt.Sprint(p))
 	}
-	return ""
-}
-
-func (r *TCResource) Path(p string) *TCResource {
-	r.RPath = path.Join(r.RPath, p)
+	r.RPath = path.Join(r.RPath, path.Join(spaths...))
 	return r
 }
 
-func (r *TCResource) IsParent(path string) bool {
-	return true
-}
-
-func (r *TCResource) Append(res TCResource) *TCResource {
-	r.RBase = path.Join(r.RBase, res.RBase)
-	r.RPath = path.Join(r.RPath, res.RPath)
-	r.RFilters = append(r.RFilters, res.RFilters...)
-	return r
-}
+//func (r *TCResource) IsParent(path string) bool {
+//	return true
+//}
+//
+//func (r *TCResource) Append(res TCResource) *TCResource {
+//	r.RBase = path.Join(r.RBase, res.RBase)
+//	r.RPath = path.Join(r.RPath, res.RPath)
+//	r.RFilters = append(r.RFilters, res.RFilters...)
+//	return r
+//}
 
 
 func (r *TCResource) Get() (json.RawMessage, *http.Response, error) {

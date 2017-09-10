@@ -116,12 +116,11 @@ func (t *ThreatConnectClient) Owners(id ...string) *OwnerResource {
 
 func (t *ThreatConnectClient) Groups() *GroupResource {
 	return &GroupResource{
-		TCResource{
+		TCResource: TCResource{
 			TC:        t,
 			RBase:     path.Join(t.Config.Version, "groups"),
 			RResponse: new(GroupResponse),
 		},
-		Group{},
 	}
 }
 

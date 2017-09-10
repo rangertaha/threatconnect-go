@@ -17,10 +17,10 @@ package threatconnect
 
 import (
 	"net/http"
-"strconv"
+
 	"encoding/json"
-	"path"
-	"github.com/Sirupsen/logrus"
+
+
 )
 
 type Group struct {
@@ -32,79 +32,79 @@ type Group struct {
 	WebLink   string `json:"webLink,omitempty"`
 }
 
-type GroupResponseList struct {
-	Status string `json:"status,omitempty"`
-	Data   struct {
-		ResultCount int     `json:"resultCount,omitempty"`
-		Groups      []Group `json:"group,omitempty"`
-	} `json:"data,omitempty"`
-}
-
 type GroupResponse struct {
 	ResultCount int     `json:"resultCount,omitempty"`
 	Groups      []Group `json:"group,omitempty"`
-	//Group      []Group `json:"group,omitempty"`
 }
 
 type GroupResource struct {
 	TCResource
-	Group
+	groups []Group
+	group Group
 }
 
 func NewGroups(r TCResource) *GroupResource {
 	r.Path("groups")
-	r.RResponse = new(GroupResponse)
-	return &GroupResource{r, Group{}}
+	return &GroupResource{TCResource:r}
 }
 
 func (r *GroupResource) Type(gtype ...string) *GroupResource {
-	r.Group.Type = gtype[0]
+	r.group.Type = gtype[0]
 	return r
 }
 
 func (r *GroupResource) Id(id ...int) *GroupResource {
-	r.Group.Id = id[0]
+	r.group.Id = id[0]
 	return r
 }
 
 func (r *GroupResource) Publish() *GroupResource {
-	r.Path("publish")
+	r.Build().Path("publish")
 	return r
 }
 
 func (r *GroupResource) Indicators() *AssociatedIndicatorTypesResource {
+	r.Build()
 	return NewAssociatedIndicatorTypes(r.TCResource)
 }
 
 func (r *GroupResource) Groups() *AssociatedGroupTypesResource {
+	r.Build()
 	return NewAssociatedGroupTypes(r.TCResource)
 }
 
 func (r *GroupResource) Attributes(id ...string) *AttributesResource {
+	r.Build()
 	return NewAttributes(r.TCResource).Attributes(id...)
 }
 
 func (r *GroupResource) AssociatedgroupType(gtype ...string) *AssociatedGroupTypesResource {
+	r.Build()
 	return NewAssociatedGroupTypes(r.TCResource).AssociatedType(gtype...)
 }
 
 func (r *GroupResource) Victims(id ...string) *VictimsResource {
+	r.Build()
 	return NewVictims(r.TCResource).Victims(id...)
 }
 
 func (r *GroupResource) SecurityLabels(id ...string) *SecurityLabelsResource {
+	r.Build()
 	return NewSecurityLabels(r.TCResource).SecurityLabels(id...)
 }
 
 func (r *GroupResource) VictimAssets() *VictimAssetsResource {
+	r.Build()
 	return NewVictimAssetsResource(r.TCResource)
 }
 
 func (r *GroupResource) Tags(id ...string) *TagsResource {
+	r.Build()
 	return NewTagsResource(r.TCResource).Tags(id...)
 }
 
 func (r *GroupResource) AdversaryAssets() *AdversaryAssetsResource {
+	r.Build()
 	return NewAdversaryAssetsResource(r.TCResource)
 }
 
@@ -164,15 +164,15 @@ func (r *GroupResource) Threats(id ...int) *GroupResource {
 	return r
 }
 
-
 func (r *GroupResource) Build() *GroupResource {
-	logrus.Info(strconv.Itoa(r.Group.Id))
+
 	// Build the full path to this resource
-	if r.Group.Id > 0 {
-		r.RPath = path.Join(r.RPath, r.Group.Type, strconv.Itoa(r.Group.Id))
+	if r.group.Id > 0 {
+		r.Path(r.group.Type, r.group.Id)
 	} else {
-		r.RPath = path.Join(r.RPath, r.Group.Type)
+		r.Path(r.group.Type)
 	}
+
 	return r
 }
 
@@ -187,5 +187,10 @@ func (r *GroupResource) Get() (GroupResponse, *http.Response, error) {
 
 	err = json.Unmarshal(obj, &groupResponse)
 
+	if len(groupResponse.Groups) > 0 {
+		r.group = groupResponse.Groups[0]
+		r.groups = groupResponse.Groups
+	}
 	return groupResponse, res, err
 }
+
