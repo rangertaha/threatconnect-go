@@ -17,10 +17,6 @@ package threatconnect
 
 import (
 	"net/http"
-
-	"encoding/json"
-
-
 )
 
 type Group struct {
@@ -32,14 +28,18 @@ type Group struct {
 	WebLink   string `json:"webLink,omitempty"`
 }
 
-type GroupResponse struct {
+type GroupResponseList struct {
 	ResultCount int     `json:"resultCount,omitempty"`
 	Groups      []Group `json:"group,omitempty"`
 }
 
+type GroupResponseDetail struct {
+	ResultCount int     `json:"resultCount,omitempty"`
+	Group      Group  `json:"group,omitempty"`
+}
+
 type GroupResource struct {
 	TCResource
-	groups []Group
 	group Group
 }
 
@@ -176,21 +176,18 @@ func (r *GroupResource) Build() *GroupResource {
 	return r
 }
 
-func (r *GroupResource) Get() (GroupResponse, *http.Response, error) {
+func (r *GroupResource) Get() ([]Group, *http.Response, error) {
+	var groupResList GroupResponseList
+	var groupResDetail GroupResponseDetail
+
 	// Build and retrieve resource
-	obj, res, err := r.Build().TCResource.Get()
+	resc := r.Build()
 
-	var groupResponse GroupResponse
-	if err != nil {
-		return groupResponse, res, err
+	if r.group.Id == 0 {
+		res, err := resc.TCResource.Get(&groupResList)
+		return groupResList.Groups, res, err
 	}
 
-	err = json.Unmarshal(obj, &groupResponse)
-
-	if len(groupResponse.Groups) > 0 {
-		r.group = groupResponse.Groups[0]
-		r.groups = groupResponse.Groups
-	}
-	return groupResponse, res, err
+	res, err := resc.TCResource.Get(&groupResDetail)
+	return []Group{groupResDetail.Group}, res, err
 }
-

@@ -32,7 +32,7 @@ import (
 
 type TCResponse struct {
 	Status string `json:"status,omitempty"`
-	Data   json.RawMessage  `json:"data,omitempty"`
+	Data   json.RawMessage `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
@@ -87,8 +87,7 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 //}
 
 
-func (r *TCResource) Get() (json.RawMessage, *http.Response, error) {
-	log.Info(r.RPath)
+func (r *TCResource) Get(data interface{}) (*http.Response, error) {
 	r.TC.Client = r.TC.Authenticate("GET", path.Join(r.RBase, r.RPath))
 	response := new(TCResponse)
 
@@ -112,9 +111,13 @@ func (r *TCResource) Get() (json.RawMessage, *http.Response, error) {
 
 	} else if response.Status == "Failure" {
 		err = errors.New(response.Message)
+
+	} else {
+		err := json.Unmarshal(response.Data, &data)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
 	}
 
-	//logging.Debug("Data: ", string(response.Data.(json.RawMessage)))
-
-	return response.Data, res, err
+	return res, err
 }

@@ -89,11 +89,9 @@ func main() {
 
 	{
 		//     /v2/groups
-		obj, res, err := client.Groups().Get()
-		check(obj, res, err, "  GET:  /v2/groups")
-
-		log.Debug(obj.ResultCount, obj.Groups)
-
+		groups, res, err := client.Groups().Get()
+		check(groups, res, err, "  GET:  /v2/groups")
+		log.Debug(groups)
 	}
 
 	{
@@ -109,155 +107,155 @@ func main() {
 	}
 
 
-	{
-		//     /v2/groups/{type}/{id}/attributes
-		obj, res, err := client.Groups().Adversaries(1054439).Attributes().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/attributes/{attributeId}
-		obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621")
-
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels
-		obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").SecurityLabels().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels/{securityLabel}
-		//obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").SecurityLabels("{securityLabel}").Get()
-		//check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621/securityLabels/{securityLabel}")
-	}
-
-
-
-
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/groups
-		obj, res, err := client.Groups().Adversaries(1054439).Groups().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/groups/{associatedGroupType}
-		obj, res, err := client.Groups().Adversaries(1054439).Groups().AssociatedType("signatures").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups/signatures")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/groups/{associatedGroupType}/{associatedGroupId}
-		obj, res, err := client.Groups().Adversaries(1054439).Groups().AssociatedType("signatures").AssociatedId("1149415").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups/signatures/1149415")
-	}
-	// -----------------------------------------------------------------------
-
-
-
-	//     /v2/groups/{type}/{id}/indicators
-	//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}
-	//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}/{associatedIndicator}
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/indicators
-		obj, res, err := client.Groups().Adversaries(1054439).Indicators().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}
-		obj, res, err := client.Groups().Adversaries(1054439).Indicators().AssociatedType("addresses").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators/addresses")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}/{associatedIndicator}
-		obj, res, err := client.Groups().Adversaries(1054439).Indicators().AssociatedType("addresses").AssociatedId("17463458").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators/addresses/17463458")
-	}
-
-
-	//     /v2/groups/{type}/{id}/publish
-	//     /v2/groups/{type}/{id}/securityLabels
-	//     /v2/groups/{type}/{id}/securityLabels/{securityLabel}
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/publish
-		//obj, res, err := client.Groups().Adversaries(1054439).Publish().Get()
-		//check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/publish")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/securityLabels
-		obj, res, err := client.Groups().Adversaries(1054439).SecurityLabels().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/securityLabels")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/securityLabels/{securityLabel}
-		obj, res, err := client.Groups().Adversaries(1054439).SecurityLabels("TLP Green").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/securityLabels/TLP Green")
-	}
-
-
-
-	//     /v2/groups/{type}/{id}/tags
-	//     /v2/groups/{type}/{id}/tags/{tagName}
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/tags
-		obj, res, err := client.Groups().Adversaries(1054439).Tags().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/tags")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/tags/{tagName}
-		obj, res, err := client.Groups().Adversaries(1054439).Tags("DoNotDelete").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/tags/DoNotDelete")
-	}
-
-
-	//     /v2/groups/{type}/{id}/victimAssets
-	//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}
-	//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}/{assetId}
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/victimAssets
-		obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}
-		obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Type("emailAddresses").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets/emailAddresses")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}/{assetId}
-		obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Type("emailAddresses").Id("265").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets/emailAddresses/265")
-	}
-
-
-	//     /v2/groups/{type}/{id}/victims
-	//     /v2/groups/{type}/{id}/victims/{victimId}
-	// -----------------------------------------------------------------------
-	{
-		//     /v2/groups/{type}/{id}/victims
-		obj, res, err := client.Groups().Adversaries(1054439).Victims().Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victims")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}/victims/{victimId}
-		obj, res, err := client.Groups().Adversaries(1054439).Victims("172").Get()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victims/172")
-	}
+	//{
+	//	//     /v2/groups/{type}/{id}/attributes
+	//	obj, res, err := client.Groups().Adversaries(1054439).Attributes().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/attributes/{attributeId}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621")
+	//
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels
+	//	obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").SecurityLabels().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels/{securityLabel}
+	//	//obj, res, err := client.Groups().Adversaries(1054439).Attributes("2963621").SecurityLabels("{securityLabel}").Get()
+	//	//check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/attributes/2963621/securityLabels/{securityLabel}")
+	//}
+	//
+	//
+	//
+	//
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/groups
+	//	obj, res, err := client.Groups().Adversaries(1054439).Groups().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/groups/{associatedGroupType}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Groups().AssociatedType("signatures").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups/signatures")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/groups/{associatedGroupType}/{associatedGroupId}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Groups().AssociatedType("signatures").AssociatedId("1149415").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/groups/signatures/1149415")
+	//}
+	//// -----------------------------------------------------------------------
+	//
+	//
+	//
+	////     /v2/groups/{type}/{id}/indicators
+	////     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}
+	////     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}/{associatedIndicator}
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/indicators
+	//	obj, res, err := client.Groups().Adversaries(1054439).Indicators().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Indicators().AssociatedType("addresses").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators/addresses")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}/{associatedIndicator}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Indicators().AssociatedType("addresses").AssociatedId("17463458").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/indicators/addresses/17463458")
+	//}
+	//
+	//
+	////     /v2/groups/{type}/{id}/publish
+	////     /v2/groups/{type}/{id}/securityLabels
+	////     /v2/groups/{type}/{id}/securityLabels/{securityLabel}
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/publish
+	//	//obj, res, err := client.Groups().Adversaries(1054439).Publish().Get()
+	//	//check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/publish")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/securityLabels
+	//	obj, res, err := client.Groups().Adversaries(1054439).SecurityLabels().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/securityLabels")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/securityLabels/{securityLabel}
+	//	obj, res, err := client.Groups().Adversaries(1054439).SecurityLabels("TLP Green").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/securityLabels/TLP Green")
+	//}
+	//
+	//
+	//
+	////     /v2/groups/{type}/{id}/tags
+	////     /v2/groups/{type}/{id}/tags/{tagName}
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/tags
+	//	obj, res, err := client.Groups().Adversaries(1054439).Tags().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/tags")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/tags/{tagName}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Tags("DoNotDelete").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/tags/DoNotDelete")
+	//}
+	//
+	//
+	////     /v2/groups/{type}/{id}/victimAssets
+	////     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}
+	////     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}/{assetId}
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/victimAssets
+	//	obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}
+	//	obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Type("emailAddresses").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets/emailAddresses")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/victimAssets/{victimAssetType}/{assetId}
+	//	obj, res, err := client.Groups().Adversaries(1054439).VictimAssets().Type("emailAddresses").Id("265").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victimAssets/emailAddresses/265")
+	//}
+	//
+	//
+	////     /v2/groups/{type}/{id}/victims
+	////     /v2/groups/{type}/{id}/victims/{victimId}
+	//// -----------------------------------------------------------------------
+	//{
+	//	//     /v2/groups/{type}/{id}/victims
+	//	obj, res, err := client.Groups().Adversaries(1054439).Victims().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victims")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}/victims/{victimId}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Victims("172").Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439/victims/172")
+	//}
 
 }

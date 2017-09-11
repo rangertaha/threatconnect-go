@@ -119,7 +119,6 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 		TCResource: TCResource{
 			TC:        t,
 			RBase:     path.Join(t.Config.Version, "groups"),
-			RResponse: new(GroupResponse),
 		},
 	}
 }
