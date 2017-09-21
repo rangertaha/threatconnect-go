@@ -36,17 +36,14 @@ type TCResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-type TCResourcer interface {
-	Path(string) *TCResource
-	//Get() (interface{}, *http.Response, error)
-	//Append(*TCResource) *TCResource
-}
+//type TCResourcer interface {
+//	Path(string) *TCResource
+//	//Get() (interface{}, *http.Response, error)
+//	//Append(*TCResource) *TCResource
+//}
 
 type TCResource struct {
 	TC        *ThreatConnectClient
-	//Prefix
-	//Path
-	//Postfix
 	RBase     string
 	RPath     string
 	path      string
@@ -56,15 +53,6 @@ type TCResource struct {
 	RBody     interface{}
 	RResponse interface{}
 }
-
-//func (r *TCResource) FullPath(path string) string {
-//	baseURL, baseErr := url.Parse(r.RBase)
-//	pathURL, pathErr := url.Parse(path)
-//	if baseErr == nil && pathErr == nil {
-//		return baseURL.ResolveReference(pathURL).String()
-//	}
-//	return ""
-//}
 
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	var spaths []string

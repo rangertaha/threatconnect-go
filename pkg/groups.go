@@ -48,63 +48,63 @@ func NewGroups(r TCResource) *GroupResource {
 	return &GroupResource{TCResource:r}
 }
 
-func (r *GroupResource) Type(gtype ...string) *GroupResource {
-	r.group.Type = gtype[0]
+func (r *GroupResource) Type(gtype string) *GroupResource {
+	r.group.Type = gtype
 	return r
 }
 
-func (r *GroupResource) Id(id ...int) *GroupResource {
-	r.group.Id = id[0]
+func (r *GroupResource) Id(id int) *GroupResource {
+	r.group.Id = id
 	return r
 }
 
 func (r *GroupResource) Publish() *GroupResource {
-	r.Build().Path("publish")
+	r.extendSegment().Path("publish")
 	return r
 }
 
 func (r *GroupResource) Indicators() *AssociatedIndicatorTypesResource {
-	r.Build()
+	r.extendSegment()
 	return NewAssociatedIndicatorTypes(r.TCResource)
 }
 
 func (r *GroupResource) Groups() *AssociatedGroupTypesResource {
-	r.Build()
+	r.extendSegment()
 	return NewAssociatedGroupTypes(r.TCResource)
 }
 
 func (r *GroupResource) Attributes(id ...string) *AttributesResource {
-	r.Build()
+	r.extendSegment()
 	return NewAttributes(r.TCResource).Attributes(id...)
 }
 
 func (r *GroupResource) AssociatedgroupType(gtype ...string) *AssociatedGroupTypesResource {
-	r.Build()
+	r.extendSegment()
 	return NewAssociatedGroupTypes(r.TCResource).AssociatedType(gtype...)
 }
 
 func (r *GroupResource) Victims(id ...string) *VictimsResource {
-	r.Build()
+	r.extendSegment()
 	return NewVictims(r.TCResource).Victims(id...)
 }
 
 func (r *GroupResource) SecurityLabels(id ...string) *SecurityLabelsResource {
-	r.Build()
+	r.extendSegment()
 	return NewSecurityLabels(r.TCResource).SecurityLabels(id...)
 }
 
 func (r *GroupResource) VictimAssets() *VictimAssetsResource {
-	r.Build()
+	r.extendSegment()
 	return NewVictimAssetsResource(r.TCResource)
 }
 
 func (r *GroupResource) Tags(id ...string) *TagsResource {
-	r.Build()
+	r.extendSegment()
 	return NewTagsResource(r.TCResource).Tags(id...)
 }
 
 func (r *GroupResource) AdversaryAssets() *AdversaryAssetsResource {
-	r.Build()
+	r.extendSegment()
 	return NewAdversaryAssetsResource(r.TCResource)
 }
 
@@ -164,7 +164,7 @@ func (r *GroupResource) Threats(id ...int) *GroupResource {
 	return r
 }
 
-func (r *GroupResource) Build() *GroupResource {
+func (r *GroupResource) extendSegment() *GroupResource {
 
 	// Build the full path to this resource
 	if r.group.Id > 0 {
@@ -172,16 +172,15 @@ func (r *GroupResource) Build() *GroupResource {
 	} else {
 		r.Path(r.group.Type)
 	}
-
 	return r
 }
 
-func (r *GroupResource) Get() ([]Group, *http.Response, error) {
+func (r *GroupResource) Retrieve() ([]Group, *http.Response, error) {
 	var groupResList GroupResponseList
 	var groupResDetail GroupResponseDetail
 
-	// Build and retrieve resource
-	resc := r.Build()
+	// Extend path segment of resource
+	resc := r.extendSegment()
 
 	if r.group.Id == 0 {
 		res, err := resc.TCResource.Get(&groupResList)
@@ -191,3 +190,13 @@ func (r *GroupResource) Get() ([]Group, *http.Response, error) {
 	res, err := resc.TCResource.Get(&groupResDetail)
 	return []Group{groupResDetail.Group}, res, err
 }
+
+func (r *GroupResource) Create(g *Group) (Group, *http.Response, error) {
+	return nil, nil, nil
+}
+
+func (r *GroupResource) Update(g *Group) (Group, *http.Response, error) {
+	return nil, nil, nil
+}
+
+

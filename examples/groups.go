@@ -89,20 +89,20 @@ func main() {
 
 	{
 		//     /v2/groups
-		groups, res, err := client.Groups().Get()
+		groups, res, err := client.Groups().Retrieve()
 		check(groups, res, err, "  GET:  /v2/groups")
 		log.Debug(groups)
 	}
 
 	{
 		//     /v2/groups/{type}
-		obj, res, err := client.Groups().Adversaries().Get()
+		obj, res, err := client.Groups().Adversaries().Retrieve()
 		check(obj, res, err, "  GET:  /v2/groups/adversaries")
 	}
 
 	{
 		//     /v2/groups/{type}/{id}
-		obj, res, err := client.Groups().Adversaries(1054439).Get()
+		obj, res, err := client.Groups().Adversaries(1054439).Retrieve()
 		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
 	}
 
