@@ -16,19 +16,16 @@ package threatconnect
 
 import (
 	"net/http"
-	"errors"
+	//"errors"
 	"path"
 
 	log "github.com/Sirupsen/logrus"
 
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
-)
 
-//type TCResponse struct {
-//	Status string `json:"status,omitempty"`
-//	Data   json.RawMessage `json:"data,omitempty"`
-//}
+	"encoding/json"
+)
 
 type TCResponse struct {
 	Status string `json:"status,omitempty"`
@@ -36,11 +33,10 @@ type TCResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-//type TCResourcer interface {
-//	Path(string) *TCResource
-//	//Get() (interface{}, *http.Response, error)
-//	//Append(*TCResource) *TCResource
-//}
+type Data struct {
+	ResultCount int `json:"ResultCount,omitempty"`
+	Results map[string]interface{}
+}
 
 type TCResource struct {
 	TC        *ThreatConnectClient
@@ -54,6 +50,12 @@ type TCResource struct {
 	RResponse interface{}
 }
 
+func NewResponse(results interface{}) *TCResponse {
+	res := new(TCResponse)
+	res.Data.Results = results
+	return res
+}
+
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	var spaths []string
 	for _, p := range paths {
@@ -63,21 +65,9 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	return r
 }
 
-//func (r *TCResource) IsParent(path string) bool {
-//	return true
-//}
-//
-//func (r *TCResource) Append(res TCResource) *TCResource {
-//	r.RBase = path.Join(r.RBase, res.RBase)
-//	r.RPath = path.Join(r.RPath, res.RPath)
-//	r.RFilters = append(r.RFilters, res.RFilters...)
-//	return r
-//}
-
-
 func (r *TCResource) Get(data interface{}) (*http.Response, error) {
 	r.TC.Client = r.TC.Authenticate("GET", path.Join(r.RBase, r.RPath))
-	response := new(TCResponse)
+	response := NewResponse(data)
 
 	res, err := r.TC.Client.ReceiveSuccess(response)
 
@@ -88,24 +78,29 @@ func (r *TCResource) Get(data interface{}) (*http.Response, error) {
 			"length": res.ContentLength,
 			"status": response.Status,
 			"message": response.Message,
+			"count": response.Data.ResultCount,
+			"results": response.Data.Results,
 		})
+	logging.Info()
 
-	if err != nil {
-		logging.Error(err)
 
-	} else if res.StatusCode > 201 {
-		err = errors.New(res.Status)
-		logging.Error(err)
 
-	} else if response.Status == "Failure" {
-		err = errors.New(response.Message)
-
-	} else {
-		err := json.Unmarshal(response.Data, &data)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
-	}
+	//if err != nil {
+	//	logging.Error(err)
+	//
+	//} else if res.StatusCode > 201 {
+	//	err = errors.New(res.Status)
+	//	logging.Error(err)
+	//
+	//} else if response.Status == "Failure" {
+	//	err = errors.New(response.Message)
+	//
+	//} else {
+	//	err := json.Unmarshal(response.Data, &data)
+	//	if err != nil {
+	//		fmt.Println("error:", err)
+	//	}
+	//}
 
 	return res, err
 }

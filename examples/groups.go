@@ -89,22 +89,27 @@ func main() {
 
 	{
 		//     /v2/groups
-		groups, res, err := client.Groups().Retrieve()
-		check(groups, res, err, "  GET:  /v2/groups")
-		log.Debug(groups)
+		var grp []tc.Group
+		res, err := client.Groups().Get(grp)
+		check(nil, res, err, "  GET:  /v2/groups")
+		for g, i := range grp {
+			fmt.Println(g, i)
+		}
+		fmt.Println(grp)
+
 	}
 
-	{
-		//     /v2/groups/{type}
-		obj, res, err := client.Groups().Adversaries().Retrieve()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries")
-	}
-
-	{
-		//     /v2/groups/{type}/{id}
-		obj, res, err := client.Groups().Adversaries(1054439).Retrieve()
-		check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
-	}
+	//{
+	//	//     /v2/groups/{type}
+	//	obj, res, err := client.Groups().Adversaries().Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries")
+	//}
+	//
+	//{
+	//	//     /v2/groups/{type}/{id}
+	//	obj, res, err := client.Groups().Adversaries(1054439).Get()
+	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
+	//}
 
 
 	//{

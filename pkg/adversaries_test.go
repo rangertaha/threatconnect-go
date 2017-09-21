@@ -26,7 +26,7 @@ func TestAdversaries(t *testing.T) {
 	TCClient := New(TCConf)
 
 	Groups := TCClient.Groups()
-	i, res, err := Groups.Adversaries().Get()
+	res, err := Groups.Adversaries().Get()
 
 	assert.IsType(t, i, &AdversaryResponseList{}, "")
 	assert.IsType(t, res, &http.Response{}, "")

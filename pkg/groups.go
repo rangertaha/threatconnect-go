@@ -16,7 +16,7 @@
 package threatconnect
 
 import (
-	"net/http"
+	//"net/http"
 )
 
 type Group struct {
@@ -174,29 +174,29 @@ func (r *GroupResource) extendSegment() *GroupResource {
 	}
 	return r
 }
-
-func (r *GroupResource) Retrieve() ([]Group, *http.Response, error) {
-	var groupResList GroupResponseList
-	var groupResDetail GroupResponseDetail
-
-	// Extend path segment of resource
-	resc := r.extendSegment()
-
-	if r.group.Id == 0 {
-		res, err := resc.TCResource.Get(&groupResList)
-		return groupResList.Groups, res, err
-	}
-
-	res, err := resc.TCResource.Get(&groupResDetail)
-	return []Group{groupResDetail.Group}, res, err
-}
-
-func (r *GroupResource) Create(g *Group) (Group, *http.Response, error) {
-	return nil, nil, nil
-}
-
-func (r *GroupResource) Update(g *Group) (Group, *http.Response, error) {
-	return nil, nil, nil
-}
-
-
+//
+//func (r *GroupResource) Retrieve() ([]Group, *http.Response, error) {
+//	var groupResList GroupResponseList
+//	var groupResDetail GroupResponseDetail
+//
+//	// Extend path segment of resource
+//	resc := r.extendSegment()
+//
+//	if r.group.Id == 0 {
+//		res, err := resc.TCResource.Get(&groupResList)
+//		return groupResList.Groups, res, err
+//	}
+//
+//	res, err := resc.TCResource.Get(&groupResDetail)
+//	return []Group{groupResDetail.Group}, res, err
+//}
+//
+//func (r *GroupResource) Create(g *Group) (Group, *http.Response, error) {
+//	return nil, nil, nil
+//}
+//
+//func (r *GroupResource) Update(g *Group) (Group, *http.Response, error) {
+//	return nil, nil, nil
+//}
+//
+//
