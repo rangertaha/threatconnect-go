@@ -15,17 +15,16 @@
 package threatconnect
 
 import (
-	"net/http"
-	//"errors"
+	"fmt"
 	"path"
+	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
-
-	//"encoding/json"
-	"fmt"
-
-	"encoding/json"
 )
+
+type QueryParams struct {
+	Filters string `json:"filters,omitempty"`
+}
 
 type TCResponse struct {
 	Status string `json:"status,omitempty"`
@@ -33,10 +32,20 @@ type TCResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-type Data struct {
-	ResultCount int `json:"ResultCount,omitempty"`
-	Results map[string]interface{}
+func NewResponse(status, message string) *TCResponse {
+	return  &TCResponse{Status: status, Message: message}
 }
+
+func (r *TCResponse) Failure(err error) {
+	r.Status = "Failure"
+	r.Message = err.Error()
+}
+
+func (r *TCResponse) Success() {
+	r.Status = "Success"
+}
+
+
 
 type TCResource struct {
 	TC        *ThreatConnectClient
@@ -45,15 +54,10 @@ type TCResource struct {
 	path      string
 	RType     string
 	RId       string
-	RFilters  []string
-	RBody     interface{}
+	method 	  string
+	params    interface{}
+	body      interface{}
 	RResponse interface{}
-}
-
-func NewResponse(results interface{}) *TCResponse {
-	res := new(TCResponse)
-	res.Data.Results = results
-	return res
 }
 
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
@@ -65,42 +69,79 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	return r
 }
 
-func (r *TCResource) Get(data interface{}) (*http.Response, error) {
-	r.TC.Client = r.TC.Authenticate("GET", path.Join(r.RBase, r.RPath))
-	response := NewResponse(data)
+func (r *TCResource) Body(b interface{}) *TCResource {
+	r.body = b
+	return r
+}
 
-	res, err := r.TC.Client.ReceiveSuccess(response)
+func (r *TCResource) Method(method string) *TCResource {
+	r.method = method
+	return r
+}
+
+func (r *TCResource) Filter(filters ...string) *TCResource {
+	// Need improving
+	r.params = &QueryParams{Filters: filters[0]}
+	return r
+}
+
+func (r *TCResource) uri(paths ...string) string {
+	return path.Join(r.RBase, r.RPath, path.Join(paths...))
+}
+
+
+func (r *TCResource) Request() (*TCResponse, error) {
+	r.TC.Client = r.TC.Authenticate(r.method, r.uri())
+
+	response := new(TCResponse)
+
+	res, err := r.TC.Client.QueryStruct(r.params).BodyJSON(r.body).Receive(response, response)
+	log.Error(res.Status, res.Body, res.StatusCode)
+	if err != nil {
+		response.Failure(err)
+		log.Error("Client:", err)
+		return response, err
+	}
+
+	var data json.RawMessage
+	err = json.Unmarshal(response.Data, &data)
+	if err != nil {
+		log.Error("Json:", err)
+		response.Failure(err)
+		return response, err
+	}
 
 	logging := log.WithFields(
 		log.Fields{
-			"method": "GET",
+			"method": r.method,
 			"code": res.StatusCode,
 			"length": res.ContentLength,
 			"status": response.Status,
 			"message": response.Message,
-			"count": response.Data.ResultCount,
-			"results": response.Data.Results,
+			"uri": r.uri(),
 		})
-	logging.Info()
+
+	logging.Info("Requested resouce")
+	return response, nil
+}
 
 
+func (r *TCResource) Get() (*TCResponse, error) {
+	return r.Method("GET").Request()
+}
 
-	//if err != nil {
-	//	logging.Error(err)
-	//
-	//} else if res.StatusCode > 201 {
-	//	err = errors.New(res.Status)
-	//	logging.Error(err)
-	//
-	//} else if response.Status == "Failure" {
-	//	err = errors.New(response.Message)
-	//
-	//} else {
-	//	err := json.Unmarshal(response.Data, &data)
-	//	if err != nil {
-	//		fmt.Println("error:", err)
-	//	}
-	//}
+func (r *TCResource) Post(body interface{}) (*TCResponse, error) {
+	return r.Method("POST").Body(body).Request()
+}
 
-	return res, err
+func (r *TCResource) Put(body interface{}) (*TCResponse, error) {
+	return r.Method("PUT").Body(body).Request()
+}
+
+func (r *TCResource) Delete() (*TCResponse, error) {
+	return r.Method("DELETE").Request()
+}
+
+func (r *TCResource) Paginate() *Paginator {
+	return r.Method("DELETE").Request()
 }

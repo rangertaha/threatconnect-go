@@ -50,11 +50,13 @@ func NewGroups(r TCResource) *GroupResource {
 
 func (r *GroupResource) Type(gtype string) *GroupResource {
 	r.group.Type = gtype
+	r.Path(gtype)
 	return r
 }
 
 func (r *GroupResource) Id(id int) *GroupResource {
 	r.group.Id = id
+	r.Path(r.group.Type, r.group.Id)
 	return r
 }
 
@@ -174,6 +176,11 @@ func (r *GroupResource) extendSegment() *GroupResource {
 	}
 	return r
 }
+
+//func (r *GroupResource) Get() (*GroupResource, error) {
+//	return r.TCResource.Get()
+//}
+
 //
 //func (r *GroupResource) Retrieve() ([]Group, *http.Response, error) {
 //	var groupResList GroupResponseList

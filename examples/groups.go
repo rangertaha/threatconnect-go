@@ -17,7 +17,7 @@ package main
 import (
 	"os"
 	"fmt"
-	"net/http"
+	//"net/http"
 	
 	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
@@ -40,12 +40,18 @@ func init() {
 	//log.SetLevel(log.InfoLevel)
 }
 
-func check(obj interface{}, res *http.Response, err error, msg string) {
+func check(res *tc.TCResponse, err error, msg string) {
+	logging := log.WithFields(
+		log.Fields{
+			"status": res.Status,
+			"data": res.Data,
+			"message": res.Message,
+		})
 	if err != nil {
-		log.Error(err)
+		logging.Error(err, msg)
 
 	} else {
-		log.Info(res.StatusCode, msg)
+		logging.Info(res.Status, msg, string(res.Data))
 	}
 }
 
@@ -89,15 +95,17 @@ func main() {
 
 	{
 		//     /v2/groups
-		var grp []tc.Group
-		res, err := client.Groups().Get(grp)
-		check(nil, res, err, "  GET:  /v2/groups")
-		for g, i := range grp {
-			fmt.Println(g, i)
-		}
-		fmt.Println(grp)
-
+		//var grp []tc.Group
+		//res, err := client.Groups().Get()
+		//check(res, err, "  GET:  /v2/groups")
 	}
+
+	{
+		grp := &tc.Group{Name: "Taha's Golang Group"}
+		res, err := client.Groups().Adversaries().Post(grp)
+		check(res, err, "  POST:  /v2/groups/adversaries")
+	}
+
 
 	//{
 	//	//     /v2/groups/{type}
