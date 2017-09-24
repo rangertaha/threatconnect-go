@@ -46,13 +46,13 @@ func NewVictimAssetsResource(r TCResource) *VictimAssetsResource {
 }
 
 func (r *VictimAssetsResource) Type(gtype ...string) *VictimAssetsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	r.Path(gtype[0])
 	return r
 }
 
 func (r *VictimAssetsResource) Id(id ...string) *VictimAssetsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	r.Path(id[0])
 	return r
 }

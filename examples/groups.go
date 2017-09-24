@@ -24,6 +24,7 @@ import (
 	
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
+	"net/http"
 )
 
 func init() {
@@ -40,18 +41,18 @@ func init() {
 	//log.SetLevel(log.InfoLevel)
 }
 
-func check(res *tc.TCResponse, err error, msg string) {
+func check(res *http.Response, err error, msg string) {
 	logging := log.WithFields(
 		log.Fields{
+			"code": res.StatusCode,
 			"status": res.Status,
-			"data": res.Data,
-			"message": res.Message,
+			//"body": string(res.Body),
 		})
 	if err != nil {
 		logging.Error(err, msg)
 
 	} else {
-		logging.Info(res.Status, msg, string(res.Data))
+		logging.Info(res.Status, msg)
 	}
 }
 
@@ -95,15 +96,14 @@ func main() {
 
 	{
 		//     /v2/groups
-		//var grp []tc.Group
-		//res, err := client.Groups().Get()
-		//check(res, err, "  GET:  /v2/groups")
+		res, err := client.Groups().Get()
+		check(res, err, "  GET:  /v2/groups")
 	}
 
 	{
-		grp := &tc.Group{Name: "Taha's Golang Group"}
-		res, err := client.Groups().Adversaries().Post(grp)
-		check(res, err, "  POST:  /v2/groups/adversaries")
+		//grp := &tc.Group{Name: "Taha's Golang Group"}
+		//res, err := client.Groups().Adversaries().Post(grp)
+		//check(res, err, "  POST:  /v2/groups/adversaries")
 	}
 
 

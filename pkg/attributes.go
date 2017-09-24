@@ -46,7 +46,7 @@ func NewAttributes(r TCResource) *AttributesResource {
 }
 
 func (r *AttributesResource) Attributes(id ...string) *AttributesResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id) == 1 {
 		r.Path(id[0])
 	}

@@ -49,7 +49,7 @@ func NewTagsResource(r TCResource) *TagsResource {
 }
 
 func (r *TagsResource) Tags(name ...string) *TagsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(name) == 1 {
 		r.Path(name[0])
 	}

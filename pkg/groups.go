@@ -16,7 +16,7 @@
 package threatconnect
 
 import (
-	//"net/http"
+//"net/http"
 )
 
 type Group struct {
@@ -29,13 +29,22 @@ type Group struct {
 }
 
 type GroupResponseList struct {
+	Status string `json:"status,omitempty"`
+	Data   struct {
+		ResultCount int     `json:"resultCount,omitempty"`
+		Groups      []Group `json:"group,omitempty"`
+	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+type GroupResponseList struct {
 	ResultCount int     `json:"resultCount,omitempty"`
 	Groups      []Group `json:"group,omitempty"`
 }
 
 type GroupResponseDetail struct {
-	ResultCount int     `json:"resultCount,omitempty"`
-	Group      Group  `json:"group,omitempty"`
+	ResultCount int   `json:"resultCount,omitempty"`
+	Group       Group `json:"group,omitempty"`
 }
 
 type GroupResource struct {
@@ -45,7 +54,7 @@ type GroupResource struct {
 
 func NewGroups(r TCResource) *GroupResource {
 	r.Path("groups")
-	return &GroupResource{TCResource:r}
+	return &GroupResource{TCResource: r}
 }
 
 func (r *GroupResource) Type(gtype string) *GroupResource {
@@ -177,9 +186,9 @@ func (r *GroupResource) extendSegment() *GroupResource {
 	return r
 }
 
-//func (r *GroupResource) Get() (*GroupResource, error) {
-//	return r.TCResource.Get()
-//}
+func (r *GroupResource) Get() (*GroupResource, error) {
+	return r.TCResource.Get()
+}
 
 //
 //func (r *GroupResource) Retrieve() ([]Group, *http.Response, error) {

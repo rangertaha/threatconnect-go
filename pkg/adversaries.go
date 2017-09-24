@@ -44,25 +44,25 @@ type AdversaryAssetsResource struct {
 
 func NewAdversaryAssetsResource(r TCResource) *AdversaryAssetsResource {
 	r.Path("victimAssets")
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	return &AdversaryAssetsResource{r}
 }
 
 func (r *AdversaryAssetsResource) Type(gtype string) *AdversaryAssetsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	r.Path(gtype)
 	return r
 }
 
 func (r *AdversaryAssetsResource) Id(id string) *AdversaryAssetsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	r.Path(id)
 	return r
 }
 
 func (r *AdversaryAssetsResource) Handles(id ...string) *AdversaryAssetsResource {
 	r.Path("handles")
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id[0]) == 1 {
 		r.Path(id[0])
 	}
@@ -71,7 +71,7 @@ func (r *AdversaryAssetsResource) Handles(id ...string) *AdversaryAssetsResource
 
 func (r *AdversaryAssetsResource) PhoneNumbers(id ...string) *AdversaryAssetsResource {
 	r.Path("phoneNumbers")
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id[0]) == 1 {
 		r.Path(id[0])
 	}
@@ -80,18 +80,9 @@ func (r *AdversaryAssetsResource) PhoneNumbers(id ...string) *AdversaryAssetsRes
 
 func (r *AdversaryAssetsResource) Urls(id ...string) *AdversaryAssetsResource {
 	r.Path("urls")
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id[0]) == 1 {
 		r.Path(id[0])
 	}
 	return r
 }
-
-//func (r *AdversaryAssetsResource) Get() (*GroupResponseList, *http.Response, error) {
-//	obj, res, err := r.TCResource.Get()
-//	j, err := json.Marshal(&obj)
-//	if err != nil {log.Panic(err)
-//	}
-//	log.Debug(string(j))
-//	return obj.(*GroupResponseList), res, err
-//}

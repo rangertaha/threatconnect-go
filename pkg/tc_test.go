@@ -51,4 +51,3 @@ func init() {
 		Version:    Version,
 	}
 }
-

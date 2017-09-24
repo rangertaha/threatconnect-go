@@ -38,15 +38,15 @@ type WhoAmIResource struct {
 func NewWhoAmI(tc *ThreatConnectClient) *WhoAmIResource {
 	return &WhoAmIResource{
 		&TCResource{
-			TC:        tc,
-			base:     tc.Config.Version,
-			RResponse: WhoAmIResponseDetail{},
+			TC:   tc,
+			base: tc.Config.Version,
+			resp: WhoAmIResponseDetail{},
 		},
 	}
 }
 
 func (r *WhoAmIResource) WhoAmI() *WhoAmIResource {
-	r.RResponse = new(WhoAmIResponseDetail)
+	r.Response(new(WhoAmIResponseDetail))
 	r.Path("whoami")
 	return r
 }

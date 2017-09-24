@@ -57,7 +57,7 @@ func NewAssociatedIndicatorTypes(r TCResource) *AssociatedIndicatorTypesResource
 }
 
 func (r *AssociatedGroupTypesResource) AssociatedType(gtype ...string) *AssociatedGroupTypesResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(gtype) == 1 {
 		r.Path(gtype[0])
 	}
@@ -65,7 +65,7 @@ func (r *AssociatedGroupTypesResource) AssociatedType(gtype ...string) *Associat
 }
 
 func (r *AssociatedGroupTypesResource) AssociatedId(id ...string) *AssociatedGroupTypesResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id) == 1 {
 		r.Path(id[0])
 	}
@@ -73,7 +73,7 @@ func (r *AssociatedGroupTypesResource) AssociatedId(id ...string) *AssociatedGro
 }
 
 func (r *AssociatedIndicatorTypesResource) AssociatedType(itype ...string) *AssociatedIndicatorTypesResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(itype) == 1 {
 		r.Path(itype[0])
 	}
@@ -81,7 +81,7 @@ func (r *AssociatedIndicatorTypesResource) AssociatedType(itype ...string) *Asso
 }
 
 func (r *AssociatedIndicatorTypesResource) AssociatedId(id ...string) *AssociatedIndicatorTypesResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id) == 1 {
 		r.Path(id[0])
 	}

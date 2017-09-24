@@ -44,7 +44,7 @@ func NewSecurityLabels(r TCResource) *SecurityLabelsResource {
 }
 
 func (r *SecurityLabelsResource) SecurityLabels(id ...string) *SecurityLabelsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(id) == 1 {
 		r.Path(id[0])
 	}

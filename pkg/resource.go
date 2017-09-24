@@ -16,9 +16,9 @@ package threatconnect
 
 import (
 	"fmt"
-	"path"
 	"net/http"
-	"encoding/json"
+	"path"
+	//"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -28,26 +28,19 @@ type QueryParams struct {
 }
 
 type TCResponse struct {
-	Status string `json:"status,omitempty"`
-	Data   json.RawMessage `json:"data,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
-func NewResponse(status, message string) *TCResponse {
-	return  &TCResponse{Status: status, Message: message}
+	status  string      `json:"status,omitempty"`
+	data    interface{} `json:"data,omitempty"`
+	message string      `json:"message,omitempty"`
 }
 
 func (r *TCResponse) Failure(err error) {
-	r.Status = "Failure"
-	r.Message = err.Error()
+	r.status = "Failure"
+	r.message = err.Error()
 }
 
 func (r *TCResponse) Success() {
-	r.Status = "Success"
+	r.status = "Success"
 }
-
-
-
 
 type Resourcer interface {
 	Path()
@@ -61,22 +54,20 @@ type Resourcer interface {
 	Delete()
 }
 
-
-
 type TCResource struct {
-	TC        *ThreatConnectClient
-	base     string
-	path      string
-	method 	  string
-	params    interface{}
-	body      interface{}
-	RResponse interface{}
+	TC     *ThreatConnectClient
+	base   string
+	path   string
+	method string
+	params interface{}
+	body   interface{}
+	resp   interface{}
 }
 
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	var spaths []string
 	for _, p := range paths {
-		spaths = append(spaths,fmt.Sprint(p))
+		spaths = append(spaths, fmt.Sprint(p))
 	}
 	r.path = path.Join(r.path, path.Join(spaths...))
 	return r
@@ -84,6 +75,11 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 
 func (r *TCResource) Body(b interface{}) *TCResource {
 	r.body = b
+	return r
+}
+
+func (r *TCResource) Response(res interface{}) *TCResource {
+	r.resp = res
 	return r
 }
 
@@ -102,57 +98,40 @@ func (r *TCResource) uri(paths ...string) string {
 	return path.Join(r.base, r.path, path.Join(paths...))
 }
 
-
-func (r *TCResource) Request() (*TCResponse, *http.Response, error) {
+func (r *TCResource) Request() (*http.Response, error) {
 	r.TC.Client = r.TC.Authenticate(r.method, r.uri())
 
-	response := new(TCResponse)
-
 	res, err := r.TC.Client.QueryStruct(r.params).
-		BodyJSON(r.body).Receive(response, response)
-
-	log.Error(res.Status, res.Body, res.StatusCode)
-	if err != nil {
-		response.Failure(err)
-		log.Error("Client:", err)
-		return response, err
-	}
-
-	var data json.RawMessage
-	err = json.Unmarshal(response.Data, &data)
-	if err != nil {
-		log.Error("Json:", err)
-		response.Failure(err)
-		return response, err
-	}
+		BodyJSON(r.body).Receive(r.resp, r.resp)
 
 	logging := log.WithFields(
 		log.Fields{
 			"method": r.method,
-			"code": res.StatusCode,
+			"code":   res.StatusCode,
 			"length": res.ContentLength,
-			"status": response.Status,
-			"message": response.Message,
-			"uri": r.uri(),
+			"uri":    r.uri(),
 		})
 
-	logging.Info("Requested resouce")
-	return response, res, nil
+	if err != nil {
+		log.Error(err)
+	}
+
+	logging.Debug("Resource requested")
+	return res, err
 }
 
-
-func (r *TCResource) Get() (*TCResponse, error) {
+func (r *TCResource) Get() (*http.Response, error) {
 	return r.Method("GET").Request()
 }
 
-func (r *TCResource) Post(body interface{}) (*TCResponse, error) {
+func (r *TCResource) Post(body interface{}) (*http.Response, error) {
 	return r.Method("POST").Body(body).Request()
 }
 
-func (r *TCResource) Put(body interface{}) (*TCResponse, error) {
+func (r *TCResource) Put(body interface{}) (*http.Response, error) {
 	return r.Method("PUT").Body(body).Request()
 }
 
-func (r *TCResource) Delete() (*TCResponse, error) {
+func (r *TCResource) Delete() (*http.Response, error) {
 	return r.Method("DELETE").Request()
 }

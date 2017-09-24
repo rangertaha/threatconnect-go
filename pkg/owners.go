@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // Everything in the ThreatConnect platform exists within an Owner.
 // Think of the owner as the bucket or location in which data exists.
 package threatconnect
@@ -113,19 +112,19 @@ func NewOwners(tc *ThreatConnectClient) *OwnerResource {
 	return &OwnerResource{
 		"",
 		TCResource{
-			TC:        tc,
-			base:     path.Join(tc.Config.Version, "owners"),
-			RResponse: OwnerResponseList{},
+			TC:   tc,
+			base: path.Join(tc.Config.Version, "owners"),
+			resp: OwnerResponseList{},
 		},
 	}
 }
 
 func (r *OwnerResource) Owners(id ...string) *OwnerResource {
-	r.RResponse = new(OwnerResponseList)
+	r.Response(new(OwnerResponseList))
 	if len(id) == 1 {
 		r.id = id[0]
 		r.Path(id[0])
-		r.RResponse = new(OwnerResponseDetail)
+		r.Response(new(OwnerResponseDetail))
 	}
 	return r
 }
@@ -135,7 +134,7 @@ func (r *OwnerResource) Mine() *OwnerResource {
 }
 
 func (r *OwnerResource) Members() *OwnerResource {
-	r.RResponse = new(MembersResponseList)
+	r.Response(new(MembersResponseList))
 	if r.id != "" {
 		r.Path("members")
 	} else {
@@ -145,9 +144,9 @@ func (r *OwnerResource) Members() *OwnerResource {
 }
 
 func (r *OwnerResource) Metrics() *OwnerResource {
-	r.RResponse = new(MetricsResponseList)
+	r.Response(new(MetricsResponseList))
 	if r.id != "" {
-		r.RResponse = new(MetricsResponseDetail)
+		r.Response(new(MetricsResponseDetail))
 	}
 	r.Path("metrics")
 	return r

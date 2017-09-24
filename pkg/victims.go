@@ -46,7 +46,7 @@ func NewVictims(r TCResource) *VictimsResource {
 }
 
 func (r *VictimsResource) Victims(gtype ...string) *VictimsResource {
-	r.RResponse = new(json.RawMessage)
+	r.Response(new(json.RawMessage))
 	if len(gtype) == 1 {
 		r.Path(gtype[0])
 	}

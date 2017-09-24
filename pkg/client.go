@@ -49,8 +49,6 @@ type TCConfig struct {
 	Version    string
 }
 
-
-
 func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.ErrorLevel)
@@ -117,8 +115,8 @@ func (t *ThreatConnectClient) Owners(id ...string) *OwnerResource {
 func (t *ThreatConnectClient) Groups() *GroupResource {
 	return &GroupResource{
 		TCResource: TCResource{
-			TC:        t,
-			base:     path.Join(t.Config.Version, "groups"),
+			TC:   t,
+			base: path.Join(t.Config.Version, "groups"),
 		},
 	}
 }
@@ -126,9 +124,9 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 func (t *ThreatConnectClient) SecurityLabel(id ...string) *SecurityLabelsResource {
 	resource := &SecurityLabelsResource{
 		TCResource{
-			TC:        t,
-			base:     path.Join(t.Config.Version, "securityLabels"),
-			RResponse: new(SecurityLabelResponseList),
+			TC:   t,
+			base: path.Join(t.Config.Version, "securityLabels"),
+			resp: new(SecurityLabelResponseList),
 		},
 	}
 	return resource.SecurityLabels(id...)
@@ -141,7 +139,7 @@ func (t *ThreatConnectClient) WhoAmI() *WhoAmIResource {
 func (t *ThreatConnectClient) Tags(id ...string) *TagsResource {
 	resource := &TagsResource{
 		TCResource{
-			TC:    t,
+			TC:   t,
 			base: path.Join(t.Config.Version, "tags"),
 			//RResponse: new(SecurityLabelResponseList),
 		},
