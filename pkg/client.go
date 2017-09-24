@@ -105,10 +105,10 @@ func (t *ThreatConnectClient) Authenticate(method, rpath string) *sling.Sling {
 	return client
 }
 
-func (t *ThreatConnectClient) Resource(method, path string) *ThreatConnectClient {
-	t.Client = t.Authenticate(method, path)
-	return t
-}
+//func (t *ThreatConnectClient) Resource(method, path string) *ThreatConnectClient {
+//	t.Client = t.Authenticate(method, path)
+//	return t
+//}
 
 func (t *ThreatConnectClient) Owners(id ...string) *OwnerResource {
 	return NewOwners(t).Owners(id...)
@@ -118,7 +118,7 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 	return &GroupResource{
 		TCResource: TCResource{
 			TC:        t,
-			RBase:     path.Join(t.Config.Version, "groups"),
+			base:     path.Join(t.Config.Version, "groups"),
 		},
 	}
 }
@@ -127,7 +127,7 @@ func (t *ThreatConnectClient) SecurityLabel(id ...string) *SecurityLabelsResourc
 	resource := &SecurityLabelsResource{
 		TCResource{
 			TC:        t,
-			RBase:     path.Join(t.Config.Version, "securityLabels"),
+			base:     path.Join(t.Config.Version, "securityLabels"),
 			RResponse: new(SecurityLabelResponseList),
 		},
 	}
@@ -142,7 +142,7 @@ func (t *ThreatConnectClient) Tags(id ...string) *TagsResource {
 	resource := &TagsResource{
 		TCResource{
 			TC:    t,
-			RBase: path.Join(t.Config.Version, "tags"),
+			base: path.Join(t.Config.Version, "tags"),
 			//RResponse: new(SecurityLabelResponseList),
 		},
 	}

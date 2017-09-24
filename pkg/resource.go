@@ -17,6 +17,7 @@ package threatconnect
 import (
 	"fmt"
 	"path"
+	"net/http"
 	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
@@ -47,13 +48,25 @@ func (r *TCResponse) Success() {
 
 
 
+
+type Resourcer interface {
+	Path()
+	Body()
+	Method()
+	Filter()
+	Request()
+	Get()
+	Post()
+	Put()
+	Delete()
+}
+
+
+
 type TCResource struct {
 	TC        *ThreatConnectClient
-	RBase     string
-	RPath     string
+	base     string
 	path      string
-	RType     string
-	RId       string
 	method 	  string
 	params    interface{}
 	body      interface{}
@@ -65,7 +78,7 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 	for _, p := range paths {
 		spaths = append(spaths,fmt.Sprint(p))
 	}
-	r.RPath = path.Join(r.RPath, path.Join(spaths...))
+	r.path = path.Join(r.path, path.Join(spaths...))
 	return r
 }
 
@@ -86,16 +99,18 @@ func (r *TCResource) Filter(filters ...string) *TCResource {
 }
 
 func (r *TCResource) uri(paths ...string) string {
-	return path.Join(r.RBase, r.RPath, path.Join(paths...))
+	return path.Join(r.base, r.path, path.Join(paths...))
 }
 
 
-func (r *TCResource) Request() (*TCResponse, error) {
+func (r *TCResource) Request() (*TCResponse, *http.Response, error) {
 	r.TC.Client = r.TC.Authenticate(r.method, r.uri())
 
 	response := new(TCResponse)
 
-	res, err := r.TC.Client.QueryStruct(r.params).BodyJSON(r.body).Receive(response, response)
+	res, err := r.TC.Client.QueryStruct(r.params).
+		BodyJSON(r.body).Receive(response, response)
+
 	log.Error(res.Status, res.Body, res.StatusCode)
 	if err != nil {
 		response.Failure(err)
@@ -122,7 +137,7 @@ func (r *TCResource) Request() (*TCResponse, error) {
 		})
 
 	logging.Info("Requested resouce")
-	return response, nil
+	return response, res, nil
 }
 
 
@@ -139,9 +154,5 @@ func (r *TCResource) Put(body interface{}) (*TCResponse, error) {
 }
 
 func (r *TCResource) Delete() (*TCResponse, error) {
-	return r.Method("DELETE").Request()
-}
-
-func (r *TCResource) Paginate() *Paginator {
 	return r.Method("DELETE").Request()
 }

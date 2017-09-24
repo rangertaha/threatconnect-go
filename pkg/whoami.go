@@ -39,7 +39,7 @@ func NewWhoAmI(tc *ThreatConnectClient) *WhoAmIResource {
 	return &WhoAmIResource{
 		&TCResource{
 			TC:        tc,
-			RBase:     tc.Config.Version,
+			base:     tc.Config.Version,
 			RResponse: WhoAmIResponseDetail{},
 		},
 	}
@@ -47,6 +47,6 @@ func NewWhoAmI(tc *ThreatConnectClient) *WhoAmIResource {
 
 func (r *WhoAmIResource) WhoAmI() *WhoAmIResource {
 	r.RResponse = new(WhoAmIResponseDetail)
-	r.RPath = "whoami"
+	r.Path("whoami")
 	return r
 }

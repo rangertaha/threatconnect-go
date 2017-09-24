@@ -114,7 +114,7 @@ func NewOwners(tc *ThreatConnectClient) *OwnerResource {
 		"",
 		TCResource{
 			TC:        tc,
-			RBase:     path.Join(tc.Config.Version, "owners"),
+			base:     path.Join(tc.Config.Version, "owners"),
 			RResponse: OwnerResponseList{},
 		},
 	}

@@ -56,7 +56,7 @@ func (r *GroupResource) Type(gtype string) *GroupResource {
 
 func (r *GroupResource) Id(id int) *GroupResource {
 	r.group.Id = id
-	r.Path(r.group.Type, r.group.Id)
+	r.Path(id)
 	return r
 }
 
