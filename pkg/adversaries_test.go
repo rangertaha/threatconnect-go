@@ -13,25 +13,3 @@
 // limitations under the License.
 
 package threatconnect
-
-import (
-	"net/http"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-)
-
-func TestAdversaries(t *testing.T) {
-	TCClient := New(TCConf)
-
-	Groups := TCClient.Groups()
-	res, err := Groups.Adversaries().Get()
-
-	assert.IsType(t, i, &AdversaryResponseList{}, "")
-	assert.IsType(t, res, &http.Response{}, "")
-	assert.NoError(t, err, "")
-
-	obj := i.(*AdversaryResponseList)
-	assert.Equal(t, obj.Status, "Success", "")
-	assert.IsType(t, obj.Data.Groups, []Group{}, "")
-}

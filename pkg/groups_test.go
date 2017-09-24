@@ -24,7 +24,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-func CheckResponse(t *testing.T, obj interface{}, res *http.Response, rerr error, msg string) {
+func CheckResponse(t *testing.T, obj interface{}, rerr error, msg string) {
 	if rerr != nil {
 		log.Panic(rerr)
 	}
@@ -42,8 +42,8 @@ func TestGroups(t *testing.T) {
 	TCClient := New(TCConf)
 
 	Groups := TCClient.Groups()
-	i, res, err := Groups.Get()
-	CheckResponse(t, i, res, err, "/v2/groups")
+	res, err := Groups.Get()
+	CheckResponse(t, res, err, "/v2/groups")
 
 	assert.IsType(t, i, &GroupResponseList{}, "")
 	assert.IsType(t, res, &http.Response{}, "")

@@ -26,7 +26,6 @@ import (
 	"time"
 
 	"github.com/dghubble/sling"
-
 	log "github.com/Sirupsen/logrus"
 )
 

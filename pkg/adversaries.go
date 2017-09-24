@@ -12,77 +12,87 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Adversary Assets are accounts or web resources that Adversaries leverage in
-// support of their operations.
+// Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-import (
-	//"net/http"
-	"encoding/json"
-	//log "github.com/Sirupsen/logrus"
-)
+
+
+type Adversary struct {
+	Id        int    `json:"id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	OwnerName string `json:"ownerName,omitempty"`
+	DateAdded string `json:"dateAdded,omitempty"`
+	WebLink   string `json:"webLink,omitempty"`
+	EventDate string `json:"eventDate,omitempty"`
+}
 
 type AdversaryResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int     `json:"resultCount,omitempty"`
-		Groups      []Group `json:"adversary,omitempty"`
+		Groups      []Group `json:"group,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
-type AdversaryResponseDetail struct {
+type AdversaryResponse struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int   `json:"resultCount,omitempty"`
-		Groups      Group `json:"adversary,omitempty"`
+		Groups      Group `json:"group,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
-type AdversaryAssetsResource struct {
+type AdversaryResource struct {
 	TCResource
+	adversary Adversary
 }
 
-func NewAdversaryAssetsResource(r TCResource) *AdversaryAssetsResource {
-	r.Path("victimAssets")
-	r.Response(new(json.RawMessage))
-	return &AdversaryAssetsResource{r}
+func NewAdversaryResource(r TCResource) *AdversaryResource {
+	r.Path("adversaries")
+	return &AdversaryResource{TCResource: r}
 }
 
-func (r *AdversaryAssetsResource) Type(gtype string) *AdversaryAssetsResource {
-	r.Response(new(json.RawMessage))
-	r.Path(gtype)
-	return r
-}
-
-func (r *AdversaryAssetsResource) Id(id string) *AdversaryAssetsResource {
-	r.Response(new(json.RawMessage))
-	r.Path(id)
-	return r
-}
-
-func (r *AdversaryAssetsResource) Handles(id ...string) *AdversaryAssetsResource {
-	r.Path("handles")
-	r.Response(new(json.RawMessage))
-	if len(id[0]) == 1 {
-		r.Path(id[0])
+func (r *AdversaryResource) Id(id ...int) *AdversaryResource {
+	if len(id) > 0 {
+		r.adversary.Id = id[0]
+		r.Path(id)
 	}
 	return r
 }
 
-func (r *AdversaryAssetsResource) PhoneNumbers(id ...string) *AdversaryAssetsResource {
-	r.Path("phoneNumbers")
-	r.Response(new(json.RawMessage))
-	if len(id[0]) == 1 {
-		r.Path(id[0])
-	}
+func (r *AdversaryResource) Publish() *AdversaryResource {
+	r.Path("publish")
 	return r
 }
 
-func (r *AdversaryAssetsResource) Urls(id ...string) *AdversaryAssetsResource {
-	r.Path("urls")
-	r.Response(new(json.RawMessage))
-	if len(id[0]) == 1 {
-		r.Path(id[0])
+func (r *AdversaryResource) Retrieve() ([]Group, error) {
+	if r.adversary.Id > 0 {
+		grp := &GroupResponse{}
+		r.Response(grp)
+		r.Get()
+		return []Group{grp.Data.Groups}, nil
 	}
-	return r
+
+	grps := &GroupResponseList{}
+	r.Response(grps)
+	r.TCResource.Get()
+	return grps.Data.Groups, nil
 }
+
+func (r *AdversaryResource) Create(g *Adversary) (Group, error) {
+	grp := &GroupResponse{}
+	r.Response(grp)
+	_, err := r.Post(g)
+	return grp.Data.Groups, err
+}
+
+func (r *AdversaryResource) Update(g *Adversary) (Group, error) {
+	return Group{}, nil
+}
+
+func (r *AdversaryResource) Delete() (Group, error) {
+	return Group{}, nil
+}
+

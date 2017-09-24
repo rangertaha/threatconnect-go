@@ -33,6 +33,14 @@ type TCResponse struct {
 	message string      `json:"message,omitempty"`
 }
 
+type DeleteResponse struct {
+	ApiCalls  int      `json:"apiCalls,omitempty"`
+	ResultCount    int `json:"resultCount,omitempty"`
+	Status string      `json:"status,omitempty"`
+}
+
+
+
 func (r *TCResponse) Failure(err error) {
 	r.status = "Failure"
 	r.message = err.Error()
@@ -70,6 +78,11 @@ func (r *TCResource) Path(paths ...interface{}) *TCResource {
 		spaths = append(spaths, fmt.Sprint(p))
 	}
 	r.path = path.Join(r.path, path.Join(spaths...))
+	return r
+}
+
+func (r *TCResource) Base(b string) *TCResource {
+	r.base = b
 	return r
 }
 
@@ -134,4 +147,11 @@ func (r *TCResource) Put(body interface{}) (*http.Response, error) {
 
 func (r *TCResource) Delete() (*http.Response, error) {
 	return r.Method("DELETE").Request()
+}
+
+func (r *TCResource) Remove() (*DeleteResponse, error) {
+	del := &DeleteResponse{}
+	r.Response(del)
+	_, err := r.Method("DELETE").Request()
+	return del, err
 }
