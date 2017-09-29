@@ -60,14 +60,14 @@ func main() {
 	})
 
 	{
-		//     /v2/groups
-		client.Groups().Get()
+		//     /v2/groups/adversaries
+		client.Groups().Adversaries().Get()
 	}
 
 	{
-		//     /v2/groups
-		res, err := client.Groups().Retrieve()
-		fmt.Println(err, "  GET:  /v2/groups")
+		//     /v2/groups/adversaries
+		res, err := client.Groups().Adversaries().Retrieve()
+		fmt.Println(err, "  GET:  /v2/groups/adversaries")
 		fmt.Println(res)
 		fmt.Println(err)
 	}

@@ -15,6 +15,10 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
+import (
+	"errors"
+)
+
 type Group struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
@@ -46,9 +50,12 @@ func (r *GroupResource) Retrieve() ([]Group, error) {
 	grps := &GroupResponseList{}
 	r.Response(grps)
 	_, err := r.TCResource.Get()
+	if grps.Status == "Failure" {
+		err = errors.New(grps.Message)
+	}
 	return grps.Data.Groups, err
 }
 
-//func (r *GroupResource) Adversaries(id ...int) *AdversaryResource {
-//	return NewAdversaryResource(r.TCResource).Id(id...)
-//}
+func (r *GroupResource) Adversaries(id ...int) *AdversaryResource {
+	return NewAdversaryResource(r.TCResource).Id(id...)
+}

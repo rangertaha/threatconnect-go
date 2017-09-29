@@ -21,6 +21,8 @@ import (
 	//"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
+	//"io/ioutil"
+	"io/ioutil"
 )
 
 type QueryParams struct {
@@ -116,6 +118,9 @@ func (r *TCResource) Request() (*http.Response, error) {
 
 	res, err := r.TC.Client.QueryStruct(r.params).
 		BodyJSON(r.body).Receive(r.resp, r.resp)
+	defer res.Body.Close()
+
+	content, _ := ioutil.ReadAll(res.Body)
 
 	logging := log.WithFields(
 		log.Fields{
@@ -123,6 +128,7 @@ func (r *TCResource) Request() (*http.Response, error) {
 			"code":   res.StatusCode,
 			"length": res.ContentLength,
 			"uri":    r.uri(),
+			"body": content,
 		})
 
 	if err != nil {
@@ -130,7 +136,7 @@ func (r *TCResource) Request() (*http.Response, error) {
 	}
 
 	logging.Debug("Resource requested")
-	return res, err
+	return res, err //CheckResponse(res, err)
 }
 
 func (r *TCResource) Get() (*http.Response, error) {

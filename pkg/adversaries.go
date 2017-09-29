@@ -30,7 +30,7 @@ type AdversaryResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int     `json:"resultCount,omitempty"`
-		Groups      []Group `json:"group,omitempty"`
+		Groups      []Group `json:"adversary,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -71,14 +71,14 @@ func (r *AdversaryResource) Retrieve() ([]Group, error) {
 	if r.adversary.Id > 0 {
 		grp := &AdversaryResponse{}
 		r.Response(grp)
-		r.Get()
-		return []Group{grp.Data.Groups}, nil
+		res, err := r.Get()
+		return []Group{grp.Data.Groups}, CheckResponse(res, err)
 	}
 
 	grps := &GroupResponseList{}
 	r.Response(grps)
-	r.TCResource.Get()
-	return grps.Data.Groups, nil
+	res, err := r.TCResource.Get()
+	return grps.Data.Groups, CheckResponse(res, err)
 }
 
 func (r *AdversaryResource) Create(g *Adversary) (Group, error) {
