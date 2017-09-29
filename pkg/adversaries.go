@@ -69,7 +69,7 @@ func (r *AdversaryResource) Publish() *AdversaryResource {
 
 func (r *AdversaryResource) Retrieve() ([]Group, error) {
 	if r.adversary.Id > 0 {
-		grp := &GroupResponse{}
+		grp := &AdversaryResponse{}
 		r.Response(grp)
 		r.Get()
 		return []Group{grp.Data.Groups}, nil
@@ -82,7 +82,7 @@ func (r *AdversaryResource) Retrieve() ([]Group, error) {
 }
 
 func (r *AdversaryResource) Create(g *Adversary) (Group, error) {
-	grp := &GroupResponse{}
+	grp := &AdversaryResponse{}
 	r.Response(grp)
 	_, err := r.Post(g)
 	return grp.Data.Groups, err

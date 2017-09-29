@@ -17,11 +17,14 @@ package main
 import (
 	"os"
 	"fmt"
+	"bytes"
+	"encoding/json"
 
 	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
+
 )
 
 func init() {
@@ -38,7 +41,14 @@ func init() {
 	//log.SetLevel(log.InfoLevel)
 }
 
-
+func jsonPrettyPrint(in string) string {
+    var out bytes.Buffer
+    err := json.Indent(&out, []byte(in), "", "\t")
+    if err != nil {
+        return in
+    }
+    return out.String()
+}
 
 func main() {
 	client := tc.New(tc.TCConfig{
@@ -52,17 +62,19 @@ func main() {
 	{
 		//     /v2/groups
 		res, err := client.Groups().Get()
-		check(err, "  POST:  /v2/groups")
-		fmt.Println(res)
+		defer res.Body.Close()
 		fmt.Println(err)
+
+
+		fmt.Println(json.NewDecoder(res.Body).Decode(json.RawMessage{}))
 	}
 
 	{
 		//     /v2/groups
-		res, err := client.Groups().Retrieve()
-		check(err, "  GET:  /v2/groups")
-		fmt.Println(res)
-		fmt.Println(err)
+		//res, err := client.Groups().Retrieve()
+		//fmt.Println(err, "  GET:  /v2/groups")
+		//fmt.Println(res)
+		//fmt.Println(err)
 	}
 
 }

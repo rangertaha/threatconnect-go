@@ -18,12 +18,10 @@ package threatconnect
 type Group struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
-	Type      string `json:"type,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
 }
 
 type GroupResponseList struct {
@@ -31,15 +29,6 @@ type GroupResponseList struct {
 	Data   struct {
 		ResultCount int     `json:"resultCount,omitempty"`
 		Groups      []Group `json:"group,omitempty"`
-	} `json:"data,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
-type GroupResponse struct {
-	Status string `json:"status,omitempty"`
-	Data   struct {
-		ResultCount int   `json:"resultCount,omitempty"`
-		Groups      Group `json:"group,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -60,6 +49,6 @@ func (r *GroupResource) Retrieve() ([]Group, error) {
 	return grps.Data.Groups, err
 }
 
-func (r *GroupResource) Adversaries(id ...int) *AdversaryResource {
-	return NewAdversaryResource(r.TCResource).Id(id...)
-}
+//func (r *GroupResource) Adversaries(id ...int) *AdversaryResource {
+//	return NewAdversaryResource(r.TCResource).Id(id...)
+//}
