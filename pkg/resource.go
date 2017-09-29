@@ -22,7 +22,10 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	//"io/ioutil"
-	"io/ioutil"
+	//"io/ioutil"
+	//"bytes"
+	"encoding/json"
+	"bytes"
 )
 
 type QueryParams struct {
@@ -30,9 +33,9 @@ type QueryParams struct {
 }
 
 type TCResponse struct {
-	status  string      `json:"status,omitempty"`
-	data    interface{} `json:"data,omitempty"`
-	message string      `json:"message,omitempty"`
+	Status  string      `json:"status,omitempty"`
+	Data    json.RawMessage `json:"data,omitempty"`
+	Message string      `json:"message,omitempty"`
 }
 
 type DeleteResponse struct {
@@ -43,14 +46,14 @@ type DeleteResponse struct {
 
 
 
-func (r *TCResponse) Failure(err error) {
-	r.status = "Failure"
-	r.message = err.Error()
-}
-
-func (r *TCResponse) Success() {
-	r.status = "Success"
-}
+//func (r *TCResponse) Failure(err error) {
+//	r.status = "Failure"
+//	r.message = err.Error()
+//}
+//
+//func (r *TCResponse) Success() {
+//	r.status = "Success"
+//}
 
 type Resourcer interface {
 	Path()
@@ -72,6 +75,7 @@ type TCResource struct {
 	params interface{}
 	body   interface{}
 	resp   interface{}
+	data  interface{}
 }
 
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
@@ -98,6 +102,11 @@ func (r *TCResource) Response(res interface{}) *TCResource {
 	return r
 }
 
+func (r *TCResource) Data(data interface{}) *TCResource {
+	r.resp = data
+	return r
+}
+
 func (r *TCResource) Method(method string) *TCResource {
 	r.method = method
 	return r
@@ -113,14 +122,15 @@ func (r *TCResource) uri(paths ...string) string {
 	return path.Join(r.base, r.path, path.Join(paths...))
 }
 
-func (r *TCResource) Request() (*http.Response, error) {
+func (r *TCResource) Request() (*TCResponse, *http.Response, error) {
 	r.TC.Client = r.TC.Authenticate(r.method, r.uri())
 
+	response := &TCResponse{}
 	res, err := r.TC.Client.QueryStruct(r.params).
-		BodyJSON(r.body).Receive(r.resp, r.resp)
-	defer res.Body.Close()
+		BodyJSON(r.body).Receive(response, response)
 
-	content, _ := ioutil.ReadAll(res.Body)
+	// In 'debug' pretty print json
+	PrettyPrintJson(response.Data)
 
 	logging := log.WithFields(
 		log.Fields{
@@ -128,7 +138,6 @@ func (r *TCResource) Request() (*http.Response, error) {
 			"code":   res.StatusCode,
 			"length": res.ContentLength,
 			"uri":    r.uri(),
-			"body": content,
 		})
 
 	if err != nil {
@@ -136,7 +145,7 @@ func (r *TCResource) Request() (*http.Response, error) {
 	}
 
 	logging.Debug("Resource requested")
-	return res, err //CheckResponse(res, err)
+	return response, res, err
 }
 
 func (r *TCResource) Get() (*http.Response, error) {
@@ -144,7 +153,8 @@ func (r *TCResource) Get() (*http.Response, error) {
 }
 
 func (r *TCResource) Post(body interface{}) (*http.Response, error) {
-	return r.Method("POST").Body(body).Request()
+	resp, res, err := r.Method("POST").Body(body).Request()
+	return res, err
 }
 
 func (r *TCResource) Put(body interface{}) (*http.Response, error) {
@@ -161,3 +171,4 @@ func (r *TCResource) Remove() (*DeleteResponse, error) {
 	_, err := r.Method("DELETE").Request()
 	return del, err
 }
+

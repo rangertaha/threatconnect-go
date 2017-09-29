@@ -66,10 +66,10 @@ func main() {
 
 	{
 		//     /v2/groups
-		res, err := client.Groups().Retrieve()
+		_, err := client.Groups().Retrieve()
 		fmt.Println(err, "  GET:  /v2/groups")
-		fmt.Println(res)
-		fmt.Println(err)
+		//fmt.Println(res)
+		//fmt.Println(err)
 	}
 
 }

@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"encoding/json"
+	"bytes"
 )
 
 func CheckResponse(res *http.Response, err error) error {
@@ -23,4 +25,17 @@ func CheckResponse(res *http.Response, err error) error {
     fmt.Printf("%s", body)
 
 	return err
+}
+
+
+func PrettyPrintJson(data json.RawMessage) {
+	var prettyJSON bytes.Buffer
+
+	err := json.Indent(&prettyJSON, data, "", "\t")
+	if err != nil {
+		log.Warn("Pretty print JSON parse error: ", err)
+	}
+	if log.GetLevel() == log.DebugLevel {
+		fmt.Println(string(prettyJSON.Bytes()))
+	}
 }
