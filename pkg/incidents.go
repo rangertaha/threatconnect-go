@@ -16,7 +16,7 @@
 package threatconnect
 
 
-type Adversary struct {
+type Incident struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
@@ -25,75 +25,73 @@ type Adversary struct {
 	EventDate string `json:"eventDate,omitempty"`
 }
 
-type AdversaryResponseList struct {
+type IncidentResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int   `json:"resultCount,omitempty"`
-		Adversary      []Adversary `json:"adversary,omitempty"`
+		Incident      []Incident `json:"incident,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type AdversaryResponseDetail struct {
+type IncidentResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int   `json:"resultCount,omitempty"`
-		Adversary      Adversary `json:"adversary,omitempty"`
+		Incident      Incident `json:"incident,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type AdversaryResource struct {
+type IncidentResource struct {
 	TCResource
-	adversary Adversary
+	incident Incident
 }
 
 
-func NewAdversaryResource(r TCResource) *AdversaryResource {
+func NewIncidentResource(r TCResource) *IncidentResource {
 	r.Path("adversaries")
-	return &AdversaryResource{TCResource: r}
+	return &IncidentResource{TCResource: r}
 }
 
-func (r *AdversaryResource) Id(id int) *AdversaryResource {
-	r.adversary.Id = id
+func (r *IncidentResource) Id(id int) *IncidentResource {
+	r.incident.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *AdversaryResource) Retrieve() ([]Adversary, error) {
-	if r.adversary.Id > 0 {
+func (r *IncidentResource) Retrieve() ([]Incident, error) {
+	if r.incident.Id > 0 {
 		grp, err := r.detail()
-		grps := []Adversary{grp.Data.Adversary}
+		grps := []Incident{grp.Data.Incident}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Adversary, err
+	return grps.Data.Incident, err
 }
 
-func (r *AdversaryResource) detail() (*AdversaryResponseDetail, error) {
-		grp := &AdversaryResponseDetail{}
-		_, err := r.Response(grp).Get()
-		return grp, err
-}
-
-func (r *AdversaryResource) list() (*AdversaryResponseList, error) {
-		grp := &AdversaryResponseList{}
+func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
+		grp := &IncidentResponseDetail{}
 		res, err := r.Response(grp).Get()
 		return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *AdversaryResource) Create(g *Adversary) (Adversary, error) {
-	grp := &AdversaryResponseDetail{}
-	r.Response(grp)
-	_, err := r.Post(g)
-	return grp.Data.Adversary, err
+func (r *IncidentResource) list() (*IncidentResponseList, error) {
+		grp := &IncidentResponseList{}
+		res, err := r.Response(grp).Get()
+		return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *AdversaryResource) Update(g *Adversary) (Adversary, error) {
-	grp := &AdversaryResponseDetail{}
-	r.Response(grp)
-	_, err := r.Put(g)
-	return grp.Data.Adversary, err
+func (r *IncidentResource) Create(g *Incident) (Incident, error) {
+	grp := &IncidentResponseDetail{}
+	res, err := r.Response(grp).Post(g)
+	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+}
+
+func (r *IncidentResource) Update(g *Incident) (Incident, error) {
+	grp := &IncidentResponseDetail{}
+	res, err := r.Response(grp).Put(g)
+	return grp.Data.Incident, ResourceError(grp.Message, res, err)
 }
 

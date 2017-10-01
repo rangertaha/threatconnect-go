@@ -57,5 +57,16 @@ func (r *GroupResource) Retrieve() ([]Group, error) {
 }
 
 func (r *GroupResource) Adversaries(id ...int) *AdversaryResource {
-	return NewAdversaryResource(r.TCResource).Id(id...)
+	if len(id) > 0 {
+		return NewAdversaryResource(r.TCResource).Id(id[0])
+	}
+	return NewAdversaryResource(r.TCResource)
 }
+
+func (r *GroupResource) Incidents(id ...int) *IncidentResource {
+	if len(id) > 0 {
+		return NewIncidentResource(r.TCResource).Id(id[0])
+	}
+	return NewIncidentResource(r.TCResource)
+}
+

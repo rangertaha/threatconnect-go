@@ -17,14 +17,11 @@ package main
 import (
 	"os"
 	"fmt"
-	"bytes"
-	"encoding/json"
 
 	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
-
 )
 
 func init() {
@@ -41,14 +38,6 @@ func init() {
 	//log.SetLevel(log.InfoLevel)
 }
 
-func jsonPrettyPrint(in string) string {
-    var out bytes.Buffer
-    err := json.Indent(&out, []byte(in), "", "\t")
-    if err != nil {
-        return in
-    }
-    return out.String()
-}
 
 func main() {
 	client := tc.New(tc.TCConfig{
@@ -59,17 +48,56 @@ func main() {
 		Version:    viper.GetString("API.VERSION"),
 	})
 
+	var adversaryId int
 	{
-		//     /v2/groups/adversaries
-		client.Groups().Adversaries().Get()
+		adversary := &tc.Adversary{Name: "Golang Client"}
+		res,err := client.Groups().Adversaries().Create(adversary)
+		adversaryId = res.Id
+		fmt.Println("CREATE")
+		fmt.Println("Id", res.Id)
+		fmt.Println("Name", res.Name)
+		fmt.Println("OwnerName", res.OwnerName)
+		fmt.Println("Error", err)
 	}
 
 	{
-		//     /v2/groups/adversaries
-		client.Groups().Adversaries().Retrieve()
-		//fmt.Println(err, "  GET:  /v2/groups/adversaries")
-		//fmt.Println(res)
-		//fmt.Println(err)
+		res, err := client.Groups().Adversaries(adversaryId).Retrieve()
+		fmt.Println("RETRIEVE")
+		for _, i := range res {
+			fmt.Println("Id", i.Id)
+			fmt.Println("Name", i.Name)
+			fmt.Println("OwnerName", i.OwnerName)
+		}
+		fmt.Println("Error", err)
+	}
+
+	{
+		adversary := &tc.Adversary{Name: "Golang Client Update"}
+		res, err := client.Groups().Adversaries(adversaryId).Update(adversary)
+		fmt.Println("UPDATE")
+		fmt.Println("Id", res.Id)
+		fmt.Println("Name", res.Name)
+		fmt.Println("OwnerName", res.OwnerName)
+		fmt.Println("Error", err)
+	}
+
+	{
+		res, err := client.Groups().Adversaries(adversaryId).Retrieve()
+		fmt.Println("RETRIEVE")
+		for _, i := range res {
+			fmt.Println("Id", i.Id)
+			fmt.Println("Name", i.Name)
+			fmt.Println("OwnerName", i.OwnerName)
+		}
+		fmt.Println("Error", err)
+	}
+
+	{
+		res, err := client.Groups().Adversaries(adversaryId).Remove()
+		fmt.Println("apiCalls", res.ApiCalls)
+		fmt.Println("Status", res.Status)
+		fmt.Println("resultCount", res.ResultCount)
+		fmt.Println("Error", err)
 	}
 
 }

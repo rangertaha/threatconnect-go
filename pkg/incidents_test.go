@@ -18,18 +18,30 @@ import (
 	"net/http"
 	"testing"
 
-	"encoding/json"
 	"github.com/stretchr/testify/assert"
-
-	log "github.com/Sirupsen/logrus"
 )
+
+var incidentId int
+
+func TestCreateIncident(t *testing.T) {
+	TCClient := New(TCConf)
+
+	incident := &Incident{Name: "Golang Client"}
+
+	res, err := TCClient.Groups().Incidents().Create(incident)
+	CheckResponse(t, err, "/v2/groups")
+
+	assert.IsType(t, res, &Incident{}, "")
+	assert.NoError(t, err, "")
+}
 
 
 func TestGroups(t *testing.T) {
 	TCClient := New(TCConf)
 
-	res, err := TCClient.Groups().Retrieve()
-	CheckResponse(t, err, "/v2/groups")
+	Groups := TCClient.Groups().Incidents()
+	res, err := Groups.Get()
+	CheckResponse(t, res, err, "/v2/groups")
 
 	assert.IsType(t, i, &GroupResponseList{}, "")
 	assert.IsType(t, res, &http.Response{}, "")

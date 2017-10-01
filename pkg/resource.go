@@ -18,14 +18,10 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	//"encoding/json"
+	//"errors"
+	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
-	//"io/ioutil"
-	//"io/ioutil"
-	//"bytes"
-	"encoding/json"
-	"bytes"
 )
 
 type QueryParams struct {
@@ -102,11 +98,6 @@ func (r *TCResource) Response(res interface{}) *TCResource {
 	return r
 }
 
-func (r *TCResource) Data(data interface{}) *TCResource {
-	r.resp = data
-	return r
-}
-
 func (r *TCResource) Method(method string) *TCResource {
 	r.method = method
 	return r
@@ -122,15 +113,14 @@ func (r *TCResource) uri(paths ...string) string {
 	return path.Join(r.base, r.path, path.Join(paths...))
 }
 
-func (r *TCResource) Request() (*TCResponse, *http.Response, error) {
+func (r *TCResource) Request() (*http.Response, error) {
 	r.TC.Client = r.TC.Authenticate(r.method, r.uri())
 
-	response := &TCResponse{}
 	res, err := r.TC.Client.QueryStruct(r.params).
-		BodyJSON(r.body).Receive(response, response)
+		BodyJSON(r.body).Receive(r.resp, r.resp)
 
 	// In 'debug' pretty print json
-	PrettyPrintJson(response.Data)
+	//PrettyPrintJson(res.Body)
 
 	logging := log.WithFields(
 		log.Fields{
@@ -138,14 +128,15 @@ func (r *TCResource) Request() (*TCResponse, *http.Response, error) {
 			"code":   res.StatusCode,
 			"length": res.ContentLength,
 			"uri":    r.uri(),
+			"status": res.Status,
 		})
 
 	if err != nil {
-		log.Error(err)
+		logging.Error(err)
 	}
 
 	logging.Debug("Resource requested")
-	return response, res, err
+	return res, err
 }
 
 func (r *TCResource) Get() (*http.Response, error) {
@@ -153,7 +144,7 @@ func (r *TCResource) Get() (*http.Response, error) {
 }
 
 func (r *TCResource) Post(body interface{}) (*http.Response, error) {
-	resp, res, err := r.Method("POST").Body(body).Request()
+	res, err := r.Method("POST").Body(body).Request()
 	return res, err
 }
 
@@ -172,3 +163,23 @@ func (r *TCResource) Remove() (*DeleteResponse, error) {
 	return del, err
 }
 
+
+//
+//func dataResponse(resp *TCResponse, res *http.Response, err error) (json.RawMessage, error) {
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	if code := res.StatusCode; 200 <= code && code <= 299 {
+//		if resp.Status == "Failure" {
+//			err = errors.New(resp.Message)
+//
+//		} else if resp.Status == "Success" {
+//			err = nil
+//
+//		} else {
+//			err = errors.New("Unknowed error")
+//		}
+//	}
+//	return resp.Data, err
+//}

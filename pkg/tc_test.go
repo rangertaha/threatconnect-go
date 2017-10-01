@@ -21,6 +21,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"testing"
 )
 
 var BaseUrl, AccessId, SecretKey, DefaultOrg, Version string
@@ -50,4 +51,12 @@ func init() {
 		DefaultOrg: DefaultOrg,
 		Version:    Version,
 	}
+}
+
+func CheckResponse(t *testing.T, err error, msg string) {
+	if err != nil {
+		log.Panic(err)
+	}
+
+	t.Log(msg)
 }
