@@ -12,98 +12,88 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Groups represent a collection of related behavior and/or intelligence.
+// Documents represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-// The valid values for an Incident’s status are:
-//
-// New
-// Open
-// Stalled
-// Containment Achieved
-// Restoration Achieved
-// Incident Reported
-// Closed
-// Rejected
-// Deleted
-type Incident struct {
+type Document struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
 
-	// Incident specific properties
-	Status string `json:"status,omitempty"`
+	// Document specific properties
+	FileName string `json:"fileName,omitempty"`
+	Malware  bool   `json:"malware,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
-type IncidentResponseList struct {
+type DocumentResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int        `json:"resultCount,omitempty"`
-		Incident    []Incident `json:"incident,omitempty"`
+		Document    []Document `json:"document,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResponseDetail struct {
+type DocumentResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int      `json:"resultCount,omitempty"`
-		Incident    Incident `json:"incident,omitempty"`
+		Document    Document `json:"document,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResource struct {
+type DocumentResource struct {
 	TCResource
-	incident Incident
+	document Document
 }
 
-func NewIncidentResource(r TCResource) *IncidentResource {
-	r.Path("incidents")
-	return &IncidentResource{TCResource: r}
+func NewDocumentResource(r TCResource) *DocumentResource {
+	r.Path("documents")
+	return &DocumentResource{TCResource: r}
 }
 
-func (r *IncidentResource) Id(id int) *IncidentResource {
-	r.incident.Id = id
+func (r *DocumentResource) Id(id int) *DocumentResource {
+	r.document.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *IncidentResource) Retrieve() ([]Incident, error) {
-	if r.incident.Id > 0 {
+func (r *DocumentResource) Retrieve() ([]Document, error) {
+	if r.document.Id > 0 {
 		grp, err := r.detail()
-		grps := []Incident{grp.Data.Incident}
+		grps := []Document{grp.Data.Document}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Incident, err
+	return grps.Data.Document, err
 }
 
-func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
-	grp := &IncidentResponseDetail{}
+func (r *DocumentResource) detail() (*DocumentResponseDetail, error) {
+	grp := &DocumentResponseDetail{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) list() (*IncidentResponseList, error) {
-	grp := &IncidentResponseList{}
+func (r *DocumentResource) list() (*DocumentResponseList, error) {
+	grp := &DocumentResponseList{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Create(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *DocumentResource) Create(g *Document) (Document, error) {
+	grp := &DocumentResponseDetail{}
 	res, err := r.Response(grp).Post(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Document, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Update(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *DocumentResource) Update(g *Document) (Document, error) {
+	grp := &DocumentResponseDetail{}
 	res, err := r.Response(grp).Put(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Document, ResourceError(grp.Message, res, err)
 }

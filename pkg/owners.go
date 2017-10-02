@@ -104,8 +104,8 @@ type OwnerResponseDetail struct {
 }
 
 type OwnerResource struct {
-	id string
 	TCResource
+	owner Owner
 }
 
 func NewOwners(tc *ThreatConnectClient) *OwnerResource {
@@ -114,17 +114,14 @@ func NewOwners(tc *ThreatConnectClient) *OwnerResource {
 		TCResource{
 			TC:   tc,
 			base: path.Join(tc.Config.Version, "owners"),
-			resp: OwnerResponseList{},
 		},
 	}
 }
 
-func (r *OwnerResource) Owners(id ...string) *OwnerResource {
-	r.Response(new(OwnerResponseList))
-	if len(id) == 1 {
-		r.id = id[0]
-		r.Path(id[0])
-		r.Response(new(OwnerResponseDetail))
+func (r *OwnerResource) Owners(name ...string) *OwnerResource {
+	if len(name) > 0 {
+		r.owner.Name = name[0]
+		r.Path(name[0])
 	}
 	return r
 }
@@ -134,17 +131,19 @@ func (r *OwnerResource) Mine() *OwnerResource {
 }
 
 func (r *OwnerResource) Members() *OwnerResource {
-	r.Response(new(MembersResponseList))
-	if r.id != "" {
+	if r.owner.Name != "" {
 		r.Path("members")
 	} else {
-		// Error: Members applies to individual owners not a list of owners.
+		// Error: Members ist of owners.
 	}
 	return r
 }
 
 func (r *OwnerResource) Metrics() *OwnerResource {
-	r.Response(new(MetricsResponseList))
+	if r.owner.Name != "" {
+		r.Path("metrics")
+	}
+
 	if r.id != "" {
 		r.Response(new(MetricsResponseDetail))
 	}

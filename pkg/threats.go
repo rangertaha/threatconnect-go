@@ -15,95 +15,81 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-// The valid values for an Incident’s status are:
-//
-// New
-// Open
-// Stalled
-// Containment Achieved
-// Restoration Achieved
-// Incident Reported
-// Closed
-// Rejected
-// Deleted
-type Incident struct {
+type Threat struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
+	Owner     Owner  `json:"owner,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
-
-	// Incident specific properties
-	Status string `json:"status,omitempty"`
 }
 
-type IncidentResponseList struct {
-	Status string `json:"status,omitempty"`
-	Data   struct {
-		ResultCount int        `json:"resultCount,omitempty"`
-		Incident    []Incident `json:"incident,omitempty"`
-	} `json:"data,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
-type IncidentResponseDetail struct {
+type ThreatResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int      `json:"resultCount,omitempty"`
-		Incident    Incident `json:"incident,omitempty"`
+		Threat      []Threat `json:"threat,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResource struct {
+type ThreatResponseDetail struct {
+	Status string `json:"status,omitempty"`
+	Data   struct {
+		ResultCount int    `json:"resultCount,omitempty"`
+		Threat      Threat `json:"threat,omitempty"`
+	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+type ThreatResource struct {
 	TCResource
-	incident Incident
+	threat Threat
 }
 
-func NewIncidentResource(r TCResource) *IncidentResource {
-	r.Path("incidents")
-	return &IncidentResource{TCResource: r}
+func NewThreatResource(r TCResource) *ThreatResource {
+	r.Path("threats")
+	return &ThreatResource{TCResource: r}
 }
 
-func (r *IncidentResource) Id(id int) *IncidentResource {
-	r.incident.Id = id
+func (r *ThreatResource) Id(id int) *ThreatResource {
+	r.threat.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *IncidentResource) Retrieve() ([]Incident, error) {
-	if r.incident.Id > 0 {
+func (r *ThreatResource) Retrieve() ([]Threat, error) {
+	if r.threat.Id > 0 {
 		grp, err := r.detail()
-		grps := []Incident{grp.Data.Incident}
+		grps := []Threat{grp.Data.Threat}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Incident, err
+	return grps.Data.Threat, err
 }
 
-func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
-	grp := &IncidentResponseDetail{}
+func (r *ThreatResource) detail() (*ThreatResponseDetail, error) {
+	grp := &ThreatResponseDetail{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) list() (*IncidentResponseList, error) {
-	grp := &IncidentResponseList{}
+func (r *ThreatResource) list() (*ThreatResponseList, error) {
+	grp := &ThreatResponseList{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Create(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *ThreatResource) Create(g *Threat) (Threat, error) {
+	grp := &ThreatResponseDetail{}
 	res, err := r.Response(grp).Post(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Threat, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Update(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *ThreatResource) Update(g *Threat) (Threat, error) {
+	grp := &ThreatResponseDetail{}
 	res, err := r.Response(grp).Put(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Threat, ResourceError(grp.Message, res, err)
 }

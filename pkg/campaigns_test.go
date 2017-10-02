@@ -21,43 +21,43 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGroupIncidents(t *testing.T) {
+func TestGroupCampaigns(t *testing.T) {
 	TCClient := New(TCConf)
-	var incidentId int
+	var campaignId int
 
 	{
-		incident := &Incident{Name: "Golang Client"}
+		campaign := &Campaign{Name: "Golang Client"}
 
-		res, err := TCClient.Groups().Incidents().Create(incident)
-		CheckResponse(t, err, "CREATE   /v2/groups/incidents")
-		incidentId = res.Id
+		res, err := TCClient.Groups().Campaigns().Create(campaign)
+		CheckResponse(t, err, "CREATE   /v2/groups/campaigns")
+		campaignId = res.Id
 
-		assert.IsType(t, res, Incident{}, "")
+		assert.IsType(t, res, Campaign{}, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
-		incident := &Incident{Name: "Golang Client Update"}
-		res, err := TCClient.Groups().Incidents(incidentId).Update(incident)
-		CheckResponse(t, err, "UPDATE   /v2/groups/incidents/"+strconv.Itoa(incidentId))
+		campaign := &Campaign{Name: "Golang Client Update"}
+		res, err := TCClient.Groups().Campaigns(campaignId).Update(campaign)
+		CheckResponse(t, err, "UPDATE   /v2/groups/campaigns/"+strconv.Itoa(campaignId))
 
-		assert.IsType(t, res, Incident{}, "")
+		assert.IsType(t, res, Campaign{}, "")
 		assert.Equal(t, "Golang Client Update", res.Name, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
-		res, err := TCClient.Groups().Incidents(incidentId).Retrieve()
-		CheckResponse(t, err, "RETRIEVE /v2/groups/incidents/"+strconv.Itoa(incidentId))
+		res, err := TCClient.Groups().Campaigns(campaignId).Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/groups/campaigns/"+strconv.Itoa(campaignId))
 
-		assert.IsType(t, res, []Incident{}, "")
+		assert.IsType(t, res, []Campaign{}, "")
 		assert.Equal(t, "Golang Client Update", res[0].Name, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
-		res, err := TCClient.Groups().Incidents(incidentId).Remove()
-		CheckResponse(t, err, "DELETE   /v2/groups/incidents/"+strconv.Itoa(incidentId))
+		res, err := TCClient.Groups().Campaigns(campaignId).Remove()
+		CheckResponse(t, err, "DELETE   /v2/groups/campaigns/"+strconv.Itoa(campaignId))
 
 		assert.IsType(t, res, &DeleteResponse{}, "")
 		assert.NoError(t, err, "")

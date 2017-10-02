@@ -70,3 +70,37 @@ func (r *GroupResource) Incidents(id ...int) *IncidentResource {
 	return NewIncidentResource(r.TCResource)
 }
 
+func (r *GroupResource) Threats(id ...int) *ThreatResource {
+	if len(id) > 0 {
+		return NewThreatResource(r.TCResource).Id(id[0])
+	}
+	return NewThreatResource(r.TCResource)
+}
+
+func (r *GroupResource) Emails(id ...int) *EmailResource {
+	if len(id) > 0 {
+		return NewEmailResource(r.TCResource).Id(id[0])
+	}
+	return NewEmailResource(r.TCResource)
+}
+
+func (r *GroupResource) Campaigns(id ...int) *CampaignResource {
+	if len(id) > 0 {
+		return NewCampaignResource(r.TCResource).Id(id[0])
+	}
+	return NewCampaignResource(r.TCResource)
+}
+
+func (r *GroupResource) Signatures(id ...int) *SignatureResource {
+	if len(id) > 0 {
+		return NewSignatureResource(r.TCResource).Id(id[0])
+	}
+	return NewSignatureResource(r.TCResource)
+}
+
+func (r *GroupResource) Documents(id ...int) *DocumentResource {
+	if len(id) > 0 {
+		return NewDocumentResource(r.TCResource).Id(id[0])
+	}
+	return NewDocumentResource(r.TCResource)
+}

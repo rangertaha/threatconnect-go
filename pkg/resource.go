@@ -29,18 +29,16 @@ type QueryParams struct {
 }
 
 type TCResponse struct {
-	Status  string      `json:"status,omitempty"`
+	Status  string          `json:"status,omitempty"`
 	Data    json.RawMessage `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
+	Message string          `json:"message,omitempty"`
 }
 
 type DeleteResponse struct {
-	ApiCalls  int      `json:"apiCalls,omitempty"`
-	ResultCount    int `json:"resultCount,omitempty"`
-	Status string      `json:"status,omitempty"`
+	ApiCalls    int    `json:"apiCalls,omitempty"`
+	ResultCount int    `json:"resultCount,omitempty"`
+	Status      string `json:"status,omitempty"`
 }
-
-
 
 //func (r *TCResponse) Failure(err error) {
 //	r.status = "Failure"
@@ -71,7 +69,7 @@ type TCResource struct {
 	params interface{}
 	body   interface{}
 	resp   interface{}
-	data  interface{}
+	data   interface{}
 }
 
 func (r *TCResource) Path(paths ...interface{}) *TCResource {
@@ -120,7 +118,8 @@ func (r *TCResource) Request() (*http.Response, error) {
 		BodyJSON(r.body).Receive(r.resp, r.resp)
 
 	// In 'debug' pretty print json
-	//PrettyPrintJson(res.Body)
+	//body := &res.Body
+	//PrettyPrintJson(*body)
 
 	logging := log.WithFields(
 		log.Fields{
@@ -144,8 +143,7 @@ func (r *TCResource) Get() (*http.Response, error) {
 }
 
 func (r *TCResource) Post(body interface{}) (*http.Response, error) {
-	res, err := r.Method("POST").Body(body).Request()
-	return res, err
+	return r.Method("POST").Body(body).Request()
 }
 
 func (r *TCResource) Put(body interface{}) (*http.Response, error) {
@@ -162,24 +160,3 @@ func (r *TCResource) Remove() (*DeleteResponse, error) {
 	_, err := r.Method("DELETE").Request()
 	return del, err
 }
-
-
-//
-//func dataResponse(resp *TCResponse, res *http.Response, err error) (json.RawMessage, error) {
-//	if err != nil {
-//		log.Error(err)
-//	}
-//
-//	if code := res.StatusCode; 200 <= code && code <= 299 {
-//		if resp.Status == "Failure" {
-//			err = errors.New(resp.Message)
-//
-//		} else if resp.Status == "Success" {
-//			err = nil
-//
-//		} else {
-//			err = errors.New("Unknowed error")
-//		}
-//	}
-//	return resp.Data, err
-//}

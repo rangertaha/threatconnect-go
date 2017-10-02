@@ -25,8 +25,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/dghubble/sling"
 	log "github.com/Sirupsen/logrus"
+	"github.com/dghubble/sling"
 )
 
 type ThreatConnectClient struct {
@@ -34,11 +34,11 @@ type ThreatConnectClient struct {
 	Client *sling.Sling
 }
 
-type Signature struct {
-	Timestamp int64
-	Unsigned  string
-	Signed    string
-}
+//type AuthSignature struct {
+//	Timestamp int64
+//	Unsigned  string
+//	Signed    string
+//}
 
 type TCConfig struct {
 	BaseUrl    string
@@ -93,7 +93,6 @@ func (t *ThreatConnectClient) Authenticate(method, rpath string) *sling.Sling {
 		return client.New().Post(reqUrl)
 	}
 	if method == "PUT" {
-		fmt.Println("PUT", reqUrl)
 		return client.New().Put(reqUrl)
 	}
 	if method == "DELETE" {
@@ -101,11 +100,6 @@ func (t *ThreatConnectClient) Authenticate(method, rpath string) *sling.Sling {
 	}
 	return client
 }
-
-//func (t *ThreatConnectClient) Resource(method, path string) *ThreatConnectClient {
-//	t.Client = t.Authenticate(method, path)
-//	return t
-//}
 
 func (t *ThreatConnectClient) Owners(id ...string) *OwnerResource {
 	return NewOwners(t).Owners(id...)
@@ -120,6 +114,19 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 	}
 }
 
+func (t *ThreatConnectClient) Types() *TypesResource {
+	return &TypesResource{
+		TCResource: TCResource{
+			TC:   t,
+			base: path.Join(t.Config.Version, "types"),
+		},
+	}
+}
+
+func (t *ThreatConnectClient) WhoAmI() (User, error) {
+	return NewWhoAmI(t).WhoAmI()
+}
+
 func (t *ThreatConnectClient) SecurityLabel(id ...string) *SecurityLabelsResource {
 	resource := &SecurityLabelsResource{
 		TCResource{
@@ -129,10 +136,6 @@ func (t *ThreatConnectClient) SecurityLabel(id ...string) *SecurityLabelsResourc
 		},
 	}
 	return resource.SecurityLabels(id...)
-}
-
-func (t *ThreatConnectClient) WhoAmI() *WhoAmIResource {
-	return NewWhoAmI(t).WhoAmI()
 }
 
 func (t *ThreatConnectClient) Tags(id ...string) *TagsResource {

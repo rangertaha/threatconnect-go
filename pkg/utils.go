@@ -15,9 +15,9 @@
 package threatconnect
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"errors"
 	//"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
@@ -25,18 +25,14 @@ import (
 	"io/ioutil"
 )
 
-
-
 func PrettyPrintJson(data io.ReadCloser) {
 
-
 	body, err := ioutil.ReadAll(data)
-    if err != nil {
-        log.Fatalf("ERROR: %s", err)
-    }
+	if err != nil {
+		log.Fatalf("ERROR: %s", err)
+	}
 
-    fmt.Printf("%s", body)
-
+	fmt.Printf("%s", body)
 
 	//var prettyJSON bytes.Buffer
 	//
@@ -49,7 +45,7 @@ func PrettyPrintJson(data io.ReadCloser) {
 	//}
 }
 
-func ResourceError(msg  string, response *http.Response, rerr error) error {
+func ResourceError(msg string, response *http.Response, rerr error) error {
 	if rerr != nil {
 		return rerr
 

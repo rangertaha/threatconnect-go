@@ -15,95 +15,95 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-// The valid values for an Incident’s status are:
+// The valid values for a Signature’s fileType field are:
 //
-// New
-// Open
-// Stalled
-// Containment Achieved
-// Restoration Achieved
-// Incident Reported
-// Closed
-// Rejected
-// Deleted
-type Incident struct {
+// Snort
+// Suricata
+// YARA
+// ClamAV
+// OpenIOC
+// CybOX™
+// Bro
+// Regex
+type Signature struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
 
-	// Incident specific properties
-	Status string `json:"status,omitempty"`
+	// Signature specific properties
+	FileName string `json:"fileName,omitempty"`
+	FileType string `json:"fileType,omitempty"`
+	FileText string `json:"fileText,omitempty"`
 }
 
-type IncidentResponseList struct {
+type SignatureResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int        `json:"resultCount,omitempty"`
-		Incident    []Incident `json:"incident,omitempty"`
+		ResultCount int         `json:"resultCount,omitempty"`
+		Signature   []Signature `json:"signature,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResponseDetail struct {
+type SignatureResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int      `json:"resultCount,omitempty"`
-		Incident    Incident `json:"incident,omitempty"`
+		ResultCount int       `json:"resultCount,omitempty"`
+		Signature   Signature `json:"signature,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResource struct {
+type SignatureResource struct {
 	TCResource
-	incident Incident
+	signature Signature
 }
 
-func NewIncidentResource(r TCResource) *IncidentResource {
-	r.Path("incidents")
-	return &IncidentResource{TCResource: r}
+func NewSignatureResource(r TCResource) *SignatureResource {
+	r.Path("signatures")
+	return &SignatureResource{TCResource: r}
 }
 
-func (r *IncidentResource) Id(id int) *IncidentResource {
-	r.incident.Id = id
+func (r *SignatureResource) Id(id int) *SignatureResource {
+	r.signature.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *IncidentResource) Retrieve() ([]Incident, error) {
-	if r.incident.Id > 0 {
+func (r *SignatureResource) Retrieve() ([]Signature, error) {
+	if r.signature.Id > 0 {
 		grp, err := r.detail()
-		grps := []Incident{grp.Data.Incident}
+		grps := []Signature{grp.Data.Signature}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Incident, err
+	return grps.Data.Signature, err
 }
 
-func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
-	grp := &IncidentResponseDetail{}
+func (r *SignatureResource) detail() (*SignatureResponseDetail, error) {
+	grp := &SignatureResponseDetail{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) list() (*IncidentResponseList, error) {
-	grp := &IncidentResponseList{}
+func (r *SignatureResource) list() (*SignatureResponseList, error) {
+	grp := &SignatureResponseList{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Create(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *SignatureResource) Create(g *Signature) (Signature, error) {
+	grp := &SignatureResponseDetail{}
 	res, err := r.Response(grp).Post(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Signature, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Update(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *SignatureResource) Update(g *Signature) (Signature, error) {
+	grp := &SignatureResponseDetail{}
 	res, err := r.Response(grp).Put(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Signature, ResourceError(grp.Message, res, err)
 }

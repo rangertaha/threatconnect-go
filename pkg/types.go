@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// AssociationTypes represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-import (
-	"testing"
+type TypesResource struct {
+	TCResource
+}
 
-	"github.com/stretchr/testify/assert"
-)
+func NewTypesResource(r TCResource) *TypesResource {
+	r.Path("types")
+	return &TypesResource{TCResource: r}
+}
 
-func TestWhoAmI(t *testing.T) {
-	TCClient := New(TCConf)
-
-	owners, err := TCClient.WhoAmI()
-
-	assert.IsType(t, owners, User{}, "")
-	assert.NoError(t, err, "")
-
-	CheckResponse(t, err, "RETRIEVE /v2/whoami")
+func (r *TypesResource) AssociationType(name ...string) *AssociationTypeResource {
+	if len(name) > 0 {
+		return NewAssociationTypeResource(r.TCResource).Name(name[0])
+	}
+	return NewAssociationTypeResource(r.TCResource)
 }

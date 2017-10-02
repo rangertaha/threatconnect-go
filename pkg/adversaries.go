@@ -15,7 +15,6 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-
 type Adversary struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
@@ -28,8 +27,8 @@ type Adversary struct {
 type AdversaryResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int   `json:"resultCount,omitempty"`
-		Adversary      []Adversary `json:"adversary,omitempty"`
+		ResultCount int         `json:"resultCount,omitempty"`
+		Adversary   []Adversary `json:"adversary,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -37,8 +36,8 @@ type AdversaryResponseList struct {
 type AdversaryResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int   `json:"resultCount,omitempty"`
-		Adversary      Adversary `json:"adversary,omitempty"`
+		ResultCount int       `json:"resultCount,omitempty"`
+		Adversary   Adversary `json:"adversary,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -47,7 +46,6 @@ type AdversaryResource struct {
 	TCResource
 	adversary Adversary
 }
-
 
 func NewAdversaryResource(r TCResource) *AdversaryResource {
 	r.Path("adversaries")
@@ -72,15 +70,15 @@ func (r *AdversaryResource) Retrieve() ([]Adversary, error) {
 }
 
 func (r *AdversaryResource) detail() (*AdversaryResponseDetail, error) {
-		grp := &AdversaryResponseDetail{}
-		_, err := r.Response(grp).Get()
-		return grp, err
+	grp := &AdversaryResponseDetail{}
+	_, err := r.Response(grp).Get()
+	return grp, err
 }
 
 func (r *AdversaryResource) list() (*AdversaryResponseList, error) {
-		grp := &AdversaryResponseList{}
-		res, err := r.Response(grp).Get()
-		return grp, ResourceError(grp.Message, res, err)
+	grp := &AdversaryResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
 }
 
 func (r *AdversaryResource) Create(g *Adversary) (Adversary, error) {
@@ -96,4 +94,3 @@ func (r *AdversaryResource) Update(g *Adversary) (Adversary, error) {
 	_, err := r.Put(g)
 	return grp.Data.Adversary, err
 }
-

@@ -20,13 +20,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWhoAmI(t *testing.T) {
+func TestTypesAssociationType(t *testing.T) {
 	TCClient := New(TCConf)
 
-	owners, err := TCClient.WhoAmI()
+	{
+		res, err := TCClient.Types().AssociationType().Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/types/associationTypes")
 
-	assert.IsType(t, owners, User{}, "")
-	assert.NoError(t, err, "")
-
-	CheckResponse(t, err, "RETRIEVE /v2/whoami")
+		assert.IsType(t, res, []AssociationType{}, "")
+		//assert.Equal(t, "Golang Client Update", res[0].Name, "")
+		assert.NoError(t, err, "")
+	}
 }

@@ -15,27 +15,17 @@
 package threatconnect
 
 import (
-	"net/http"
 	"testing"
 
-	"encoding/json"
 	"github.com/stretchr/testify/assert"
-
-	log "github.com/Sirupsen/logrus"
 )
-
 
 func TestGroups(t *testing.T) {
 	TCClient := New(TCConf)
 
 	res, err := TCClient.Groups().Retrieve()
-	CheckResponse(t, err, "/v2/groups")
+	CheckResponse(t, err, "RETRIEVE /v2/groups")
 
-	assert.IsType(t, i, &GroupResponseList{}, "")
-	assert.IsType(t, res, &http.Response{}, "")
+	assert.IsType(t, res, []Group{}, "")
 	assert.NoError(t, err, "")
-
-	obj := i.(*GroupResponseList)
-	assert.Equal(t, obj.Status, "Success", "")
-	assert.IsType(t, obj.Data.Groups, []Group{}, "")
 }

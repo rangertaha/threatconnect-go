@@ -15,95 +15,87 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-// The valid values for an Incident’s status are:
-//
-// New
-// Open
-// Stalled
-// Containment Achieved
-// Restoration Achieved
-// Incident Reported
-// Closed
-// Rejected
-// Deleted
-type Incident struct {
+type Email struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
 
-	// Incident specific properties
-	Status string `json:"status,omitempty"`
+	// Email specific properties
+	To      string `json:"to,omitempty"`
+	From    string `json:"from,omitempty"`
+	Subject string `json:"subject,omitempty"`
+	Header  string `json:"header,omitempty"`
+	Body    string `json:"body,omitempty"`
 }
 
-type IncidentResponseList struct {
+type EmailResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int        `json:"resultCount,omitempty"`
-		Incident    []Incident `json:"incident,omitempty"`
+		ResultCount int     `json:"resultCount,omitempty"`
+		Email       []Email `json:"email,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResponseDetail struct {
+type EmailResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int      `json:"resultCount,omitempty"`
-		Incident    Incident `json:"incident,omitempty"`
+		ResultCount int   `json:"resultCount,omitempty"`
+		Email       Email `json:"email,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResource struct {
+type EmailResource struct {
 	TCResource
-	incident Incident
+	email Email
 }
 
-func NewIncidentResource(r TCResource) *IncidentResource {
-	r.Path("incidents")
-	return &IncidentResource{TCResource: r}
+func NewEmailResource(r TCResource) *EmailResource {
+	r.Path("emails")
+	return &EmailResource{TCResource: r}
 }
 
-func (r *IncidentResource) Id(id int) *IncidentResource {
-	r.incident.Id = id
+func (r *EmailResource) Id(id int) *EmailResource {
+	r.email.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *IncidentResource) Retrieve() ([]Incident, error) {
-	if r.incident.Id > 0 {
+func (r *EmailResource) Retrieve() ([]Email, error) {
+	if r.email.Id > 0 {
 		grp, err := r.detail()
-		grps := []Incident{grp.Data.Incident}
+		grps := []Email{grp.Data.Email}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Incident, err
+	return grps.Data.Email, err
 }
 
-func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
-	grp := &IncidentResponseDetail{}
+func (r *EmailResource) detail() (*EmailResponseDetail, error) {
+	grp := &EmailResponseDetail{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) list() (*IncidentResponseList, error) {
-	grp := &IncidentResponseList{}
+func (r *EmailResource) list() (*EmailResponseList, error) {
+	grp := &EmailResponseList{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Create(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *EmailResource) Create(g *Email) (Email, error) {
+	grp := &EmailResponseDetail{}
 	res, err := r.Response(grp).Post(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Email, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Update(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *EmailResource) Update(g *Email) (Email, error) {
+	grp := &EmailResponseDetail{}
 	res, err := r.Response(grp).Put(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Email, ResourceError(grp.Message, res, err)
 }

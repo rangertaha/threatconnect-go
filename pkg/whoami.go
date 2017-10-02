@@ -15,6 +15,10 @@
 // Shows your user information
 package threatconnect
 
+import (
+	"path"
+)
+
 type User struct {
 	UserName  string `json:"userName,omitempty"`
 	FirstName string `json:"firstName,omitempty"`
@@ -29,6 +33,7 @@ type WhoAmIResponseDetail struct {
 		ResultCount int  `json:"resultCount,omitempty"`
 		User        User `json:"user,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type WhoAmIResource struct {
@@ -39,14 +44,13 @@ func NewWhoAmI(tc *ThreatConnectClient) *WhoAmIResource {
 	return &WhoAmIResource{
 		&TCResource{
 			TC:   tc,
-			base: tc.Config.Version,
-			resp: WhoAmIResponseDetail{},
+			base: path.Join(tc.Config.Version, "whoami"),
 		},
 	}
 }
 
-func (r *WhoAmIResource) WhoAmI() *WhoAmIResource {
-	r.Response(new(WhoAmIResponseDetail))
-	r.Path("whoami")
-	return r
+func (r *WhoAmIResource) WhoAmI() (User, error) {
+	detail := &WhoAmIResponseDetail{}
+	res, err := r.Response(detail).Get()
+	return detail.Data.User, ResourceError(detail.Message, res, err)
 }

@@ -15,95 +15,83 @@
 // Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-// The valid values for an Incident’s status are:
-//
-// New
-// Open
-// Stalled
-// Containment Achieved
-// Restoration Achieved
-// Incident Reported
-// Closed
-// Rejected
-// Deleted
-type Incident struct {
+type Campaign struct {
 	Id        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
 
-	// Incident specific properties
-	Status string `json:"status,omitempty"`
+	// Campaign specific properties
+	FirstSeen string `json:"firstSeen,omitempty"`
 }
 
-type IncidentResponseList struct {
+type CampaignResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int        `json:"resultCount,omitempty"`
-		Incident    []Incident `json:"incident,omitempty"`
+		Campaign    []Campaign `json:"campaign,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResponseDetail struct {
+type CampaignResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int      `json:"resultCount,omitempty"`
-		Incident    Incident `json:"incident,omitempty"`
+		Campaign    Campaign `json:"campaign,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
 
-type IncidentResource struct {
+type CampaignResource struct {
 	TCResource
-	incident Incident
+	campaign Campaign
 }
 
-func NewIncidentResource(r TCResource) *IncidentResource {
-	r.Path("incidents")
-	return &IncidentResource{TCResource: r}
+func NewCampaignResource(r TCResource) *CampaignResource {
+	r.Path("campaigns")
+	return &CampaignResource{TCResource: r}
 }
 
-func (r *IncidentResource) Id(id int) *IncidentResource {
-	r.incident.Id = id
+func (r *CampaignResource) Id(id int) *CampaignResource {
+	r.campaign.Id = id
 	r.Path(id)
 	return r
 }
 
-func (r *IncidentResource) Retrieve() ([]Incident, error) {
-	if r.incident.Id > 0 {
+func (r *CampaignResource) Retrieve() ([]Campaign, error) {
+	if r.campaign.Id > 0 {
 		grp, err := r.detail()
-		grps := []Incident{grp.Data.Incident}
+		grps := []Campaign{grp.Data.Campaign}
 		return grps, err
 	}
 
 	grps, err := r.list()
-	return grps.Data.Incident, err
+	return grps.Data.Campaign, err
 }
 
-func (r *IncidentResource) detail() (*IncidentResponseDetail, error) {
-	grp := &IncidentResponseDetail{}
+func (r *CampaignResource) detail() (*CampaignResponseDetail, error) {
+	grp := &CampaignResponseDetail{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) list() (*IncidentResponseList, error) {
-	grp := &IncidentResponseList{}
+func (r *CampaignResource) list() (*CampaignResponseList, error) {
+	grp := &CampaignResponseList{}
 	res, err := r.Response(grp).Get()
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Create(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *CampaignResource) Create(g *Campaign) (Campaign, error) {
+	grp := &CampaignResponseDetail{}
 	res, err := r.Response(grp).Post(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Campaign, ResourceError(grp.Message, res, err)
 }
 
-func (r *IncidentResource) Update(g *Incident) (Incident, error) {
-	grp := &IncidentResponseDetail{}
+func (r *CampaignResource) Update(g *Campaign) (Campaign, error) {
+	grp := &CampaignResponseDetail{}
 	res, err := r.Response(grp).Put(g)
-	return grp.Data.Incident, ResourceError(grp.Message, res, err)
+	return grp.Data.Campaign, ResourceError(grp.Message, res, err)
 }

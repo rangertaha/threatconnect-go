@@ -55,8 +55,8 @@ func init() {
 
 func CheckResponse(t *testing.T, err error, msg string) {
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
+	} else {
+		log.Info(msg)
 	}
-
-	t.Log(msg)
 }
