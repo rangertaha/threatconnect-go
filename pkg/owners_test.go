@@ -13,3 +13,41 @@
 // limitations under the License.
 
 package threatconnect
+
+import (
+	"strconv"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestOwners(t *testing.T) {
+	TCClient := New(TCConf)
+	var ownerId int
+
+	{
+		res, err := TCClient.Owners().Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/owners")
+
+		assert.IsType(t, res, []Owner{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Owners().Mine().Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/owners/mine")
+		ownerId = res[0].Id
+
+		assert.IsType(t, res, []Owner{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Owners(ownerId).Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/owners/"+strconv.Itoa(ownerId))
+
+		assert.IsType(t, res, []Owner{}, "")
+		assert.NoError(t, err, "")
+	}
+
+}

@@ -16,9 +16,7 @@
 // Think of the owner as the bucket or location in which data exists.
 package threatconnect
 
-import (
-	"path"
-)
+import "path"
 
 type Owner struct {
 	Id   int    `json:"id,omitempty"`
@@ -69,6 +67,7 @@ type MetricsResponseList struct {
 		ResultCount int           `json:"resultCount,omitempty"`
 		Metrics     []OwnerMetric `json:"ownerMetric,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type MetricsResponseDetail struct {
@@ -77,30 +76,34 @@ type MetricsResponseDetail struct {
 		ResultCount int         `json:"resultCount,omitempty"`
 		Metrics     OwnerMetric `json:"ownerMetric,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type MembersResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int    `json:"resultCount,omitempty"`
-		Users       []User `json:"user,omitempty"`
+		User       []User `json:"user,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type OwnerResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int     `json:"resultCount,omitempty"`
-		Owners      []Owner `json:"owner,omitempty"`
+		Owner      []Owner `json:"owner,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type OwnerResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int   `json:"resultCount,omitempty"`
-		Owners      Owner `json:"owner,omitempty"`
+		Owner      Owner `json:"owner,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type OwnerResource struct {
@@ -108,45 +111,47 @@ type OwnerResource struct {
 	owner Owner
 }
 
-func NewOwners(tc *ThreatConnectClient) *OwnerResource {
+func NewOwnerResource(t *ThreatConnectClient) *OwnerResource {
 	return &OwnerResource{
-		"",
-		TCResource{
-			TC:   tc,
-			base: path.Join(tc.Config.Version, "owners"),
+		TCResource: TCResource{
+			TC:   t,
+			base: path.Join(t.Config.Version, "owners"),
 		},
 	}
 }
 
-func (r *OwnerResource) Owners(name ...string) *OwnerResource {
-	if len(name) > 0 {
-		r.owner.Name = name[0]
-		r.Path(name[0])
+func (r *OwnerResource) Id(id ...int) *OwnerResource {
+	if len(id) > 0 {
+		r.owner.Id = id[0]
+		r.Path(id[0])
 	}
 	return r
 }
 
 func (r *OwnerResource) Mine() *OwnerResource {
-	return r.Owners("mine")
-}
-
-func (r *OwnerResource) Members() *OwnerResource {
-	if r.owner.Name != "" {
-		r.Path("members")
-	} else {
-		// Error: Members ist of owners.
-	}
+	r.owner.Id = 1
+	r.Path("mine")
 	return r
 }
 
-func (r *OwnerResource) Metrics() *OwnerResource {
-	if r.owner.Name != "" {
-		r.Path("metrics")
+func (r *OwnerResource) Retrieve() ([]Owner, error) {
+	if r.owner.Id > 0 {
+		grp, err := r.detail()
+		grps := []Owner{grp.Data.Owner}
+		return grps, err
 	}
+	grps, err := r.list()
+	return grps.Data.Owner, err
+}
 
-	if r.id != "" {
-		r.Response(new(MetricsResponseDetail))
-	}
-	r.Path("metrics")
-	return r
+func (r *OwnerResource) detail() (*OwnerResponseDetail, error) {
+	grp := &OwnerResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *OwnerResource) list() (*OwnerResponseList, error) {
+	grp := &OwnerResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
 }

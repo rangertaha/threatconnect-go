@@ -34,12 +34,6 @@ type ThreatConnectClient struct {
 	Client *sling.Sling
 }
 
-//type AuthSignature struct {
-//	Timestamp int64
-//	Unsigned  string
-//	Signed    string
-//}
-
 type TCConfig struct {
 	BaseUrl    string
 	SecretKey  string
@@ -101,10 +95,6 @@ func (t *ThreatConnectClient) Authenticate(method, rpath string) *sling.Sling {
 	return client
 }
 
-func (t *ThreatConnectClient) Owners(id ...string) *OwnerResource {
-	return NewOwners(t).Owners(id...)
-}
-
 func (t *ThreatConnectClient) Groups() *GroupResource {
 	return &GroupResource{
 		TCResource: TCResource{
@@ -121,6 +111,10 @@ func (t *ThreatConnectClient) Types() *TypesResource {
 			base: path.Join(t.Config.Version, "types"),
 		},
 	}
+}
+
+func (t *ThreatConnectClient) Owners(id ...int) *OwnerResource {
+	return NewOwnerResource(t).Id(id...)
 }
 
 func (t *ThreatConnectClient) WhoAmI() (User, error) {

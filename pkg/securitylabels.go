@@ -16,7 +16,6 @@ package threatconnect
 
 import (
 	"encoding/json"
-	//"path"
 )
 
 type SecurityLabel struct {

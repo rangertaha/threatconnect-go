@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	//"errors"
 	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
@@ -39,15 +38,6 @@ type DeleteResponse struct {
 	ResultCount int    `json:"resultCount,omitempty"`
 	Status      string `json:"status,omitempty"`
 }
-
-//func (r *TCResponse) Failure(err error) {
-//	r.status = "Failure"
-//	r.message = err.Error()
-//}
-//
-//func (r *TCResponse) Success() {
-//	r.status = "Success"
-//}
 
 type Resourcer interface {
 	Path()
