@@ -15,7 +15,7 @@
 package threatconnect
 
 import (
-	"encoding/json"
+	//"encoding/json"
 )
 
 type Attribute struct {
@@ -34,25 +34,117 @@ type AttributesResponseList struct {
 		ResultCount int         `json:"resultCount,omitempty"`
 		Attributes  []Attribute `json:"attribute,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+type AttributeResponseDetail struct {
+	Status string `json:"status,omitempty"`
+	Data   struct {
+		ResultCount int         `json:"resultCount,omitempty"`
+		Attributes  Attribute `json:"attribute,omitempty"`
+	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type AttributesResource struct {
 	TCResource
+	attribute Attribute 
 }
 
-func NewAttributes(r TCResource) *AttributesResource {
+func NewAttributesResource(r TCResource) *AttributesResource {
 	r.Path("attributes")
-	return &AttributesResource{r}
+	return &AttributesResource{TCResource: r}
 }
 
-func (r *AttributesResource) Attributes(id ...string) *AttributesResource {
-	r.Response(new(json.RawMessage))
-	if len(id) == 1 {
-		r.Path(id[0])
-	}
+func (r *AttributesResource) Id(id int) *AttributesResource {
+	r.attribute.Id = id
+	r.Path(id)
 	return r
 }
 
-func (r *AttributesResource) SecurityLabels(id ...string) *SecurityLabelsResource {
-	return NewSecurityLabels(r.TCResource).SecurityLabels(id...)
+
+func (r *AttributesResource) Retrieve() ([]Attribute, error) {
+	if r.attribute.Id > 0 {
+		grp, err := r.detail()
+		grps := []Attribute{grp.Data.Attributes}
+		return grps, err
+	}
+
+	grps, err := r.list()
+	return grps.Data.Attributes, err
 }
+
+func (r *AttributesResource) detail() (*AttributeResponseDetail, error) {
+	grp := &AttributeResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AttributesResource) list() (*AttributesResponseList, error) {
+	grp := &AttributesResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AttributesResource) Create(g *Attribute) (Attribute, error) {
+	grp := &AttributeResponseDetail{}
+	res, err := r.Response(grp).Post(g)
+	return grp.Data.Attributes, ResourceError(grp.Message, res, err)
+}
+
+func (r *AttributesResource) Update(g *Attribute) (Attribute, error) {
+	grp := &AttributeResponseDetail{}
+	res, err := r.Response(grp).Put(g)
+	return grp.Data.Attributes, ResourceError(grp.Message, res, err)
+}
+
+
+
+
+
+
+
+
+//
+//
+//func NewAttributesResource(r TCResource) *AttributesResource {
+//	r.Path("attributes")
+//	return &AttributesResource{TCResource: r}
+//}
+//
+//
+//
+//func (r *AttributesResource) Retrieve() ([]Attribute, error) {
+//	if r.attribute.Id > 0 {
+//		grp, err := r.detail()
+//		grps := []Attribute{grp.Data.Attribute}
+//		return grps, err
+//	}
+//
+//	grps, err := r.list()
+//	return grps.Data.Attribute, err
+//}
+//
+//func (r *AttributesResource) detail() (*AttributeResponseDetail, error) {
+//	grp := &AttributeResponseDetail{}
+//	res, err := r.Response(grp).Get()
+//	return grp, ResourceError(grp.Message, res, err)
+//}
+//
+//func (r *AttributesResource) list() (*AttributeResponseList, error) {
+//	grp := &AttributeResponseList{}
+//	res, err := r.Response(grp).Get()
+//	return grp, ResourceError(grp.Message, res, err)
+//}
+//
+//func (r *AttributesResource) Create(g *Attribute) (Attribute, error) {
+//	grp := &AttributeResponseDetail{}
+//	res, err := r.Response(grp).Post(g)
+//	return grp.Data.Attribute, ResourceError(grp.Message, res, err)
+//}
+//
+//func (r *AttributesResource) Update(g *Attribute) (Attribute, error) {
+//	grp := &AttributeResponseDetail{}
+//	res, err := r.Response(grp).Put(g)
+//	return grp.Data.Attribute, ResourceError(grp.Message, res, err)
+//}

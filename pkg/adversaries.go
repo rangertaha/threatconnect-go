@@ -94,3 +94,11 @@ func (r *AdversaryResource) Update(g *Adversary) (Adversary, error) {
 	_, err := r.Put(g)
 	return grp.Data.Adversary, err
 }
+
+
+func (r *AdversaryResource) Attributes(id ...int) *AttributesResource {
+	if len(id) > 0 {
+		return NewAttributesResource(r.TCResource).Id(id[0])
+	}
+	return NewAttributesResource(r.TCResource)
+}

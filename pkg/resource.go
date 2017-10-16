@@ -15,10 +15,10 @@
 package threatconnect
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"path"
-	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
 )

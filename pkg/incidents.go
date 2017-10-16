@@ -33,7 +33,7 @@ type Incident struct {
 	DateAdded string `json:"dateAdded,omitempty"`
 	WebLink   string `json:"webLink,omitempty"`
 	EventDate string `json:"eventDate,omitempty"`
-	Owner     Owner `json:"owner,omitempty"`
+	Owner     Owner  `json:"owner,omitempty"`
 
 	// Incident specific properties
 	Status string `json:"status,omitempty"`

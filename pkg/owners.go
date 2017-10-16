@@ -83,7 +83,7 @@ type MembersResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int    `json:"resultCount,omitempty"`
-		User       []User `json:"user,omitempty"`
+		User        []User `json:"user,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -92,7 +92,7 @@ type OwnerResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int     `json:"resultCount,omitempty"`
-		Owner      []Owner `json:"owner,omitempty"`
+		Owner       []Owner `json:"owner,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -101,7 +101,7 @@ type OwnerResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
 		ResultCount int   `json:"resultCount,omitempty"`
-		Owner      Owner `json:"owner,omitempty"`
+		Owner       Owner `json:"owner,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }

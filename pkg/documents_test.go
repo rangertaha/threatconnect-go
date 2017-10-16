@@ -27,9 +27,9 @@ func TestGroupDocuments(t *testing.T) {
 
 	{
 		document := &Document{
-			Name: "malwaresample.zip",
+			Name:     "malwaresample.zip",
 			FileName: "golangsample.exe",
-			Malware: true,
+			Malware:  true,
 			Password: "TCinfected",
 		}
 		res, err := TCClient.Groups().Documents().Create(document)
@@ -42,9 +42,9 @@ func TestGroupDocuments(t *testing.T) {
 
 	{
 		document := &Document{
-			Name: "golangmalwaresample.zip",
+			Name:     "golangmalwaresample.zip",
 			FileName: "golangsample.exe",
-			Malware: true,
+			Malware:  true,
 			Password: "TCinfected",
 		}
 		res, err := TCClient.Groups().Documents(documentId).Update(document)
