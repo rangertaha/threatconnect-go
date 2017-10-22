@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Groups represent a collection of related behavior and/or intelligence.
+// Package threatconnect represents a collection of related behavior and/or intelligence.
 package threatconnect
 
+// The Adversary Group represents a malicious actor or group of actors.
 type Adversary struct {
-	Id        int    `json:"id,omitempty"`
+	ID        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	OwnerName string `json:"ownerName,omitempty"`
 	DateAdded string `json:"dateAdded,omitempty"`
@@ -53,13 +54,13 @@ func NewAdversaryResource(r TCResource) *AdversaryResource {
 }
 
 func (r *AdversaryResource) Id(id int) *AdversaryResource {
-	r.adversary.Id = id
+	r.adversary.ID = id
 	r.Path(id)
 	return r
 }
 
 func (r *AdversaryResource) Retrieve() ([]Adversary, error) {
-	if r.adversary.Id > 0 {
+	if r.adversary.ID > 0 {
 		grp, err := r.detail()
 		grps := []Adversary{grp.Data.Adversary}
 		return grps, err
@@ -95,10 +96,13 @@ func (r *AdversaryResource) Update(g *Adversary) (Adversary, error) {
 	return grp.Data.Adversary, err
 }
 
-
 func (r *AdversaryResource) Attributes(id ...int) *AttributesResource {
 	if len(id) > 0 {
 		return NewAttributesResource(r.TCResource).Id(id[0])
 	}
 	return NewAttributesResource(r.TCResource)
+}
+
+func (r *AdversaryResource) Assets() *AssetResource {
+	return NewAssetResourceResource(r.TCResource)
 }
