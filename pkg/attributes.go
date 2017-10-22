@@ -14,17 +14,15 @@
 
 package threatconnect
 
-import (
-	//"encoding/json"
-)
+//"encoding/json"
 
 type Attribute struct {
-	Id           int    `json:"id,omitempty"`
+	ID           int    `json:"id,omitempty"`
 	Name         string `json:"name,omitempty"`
 	Type         string `json:"type,omitempty"`
 	Value        string `json:"value,omitempty"`
 	DateAdded    string `json:"dateAdded,omitempty"`
-	Displayed    string `json:"displayed,omitempty"`
+	Displayed    bool   `json:"displayed,omitempty"`
 	LastModified string `json:"lastModified,omitempty"`
 }
 
@@ -40,7 +38,7 @@ type AttributesResponseList struct {
 type AttributeResponseDetail struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount int         `json:"resultCount,omitempty"`
+		ResultCount int       `json:"resultCount,omitempty"`
 		Attributes  Attribute `json:"attribute,omitempty"`
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
@@ -48,7 +46,7 @@ type AttributeResponseDetail struct {
 
 type AttributesResource struct {
 	TCResource
-	attribute Attribute 
+	attribute Attribute
 }
 
 func NewAttributesResource(r TCResource) *AttributesResource {
@@ -57,14 +55,13 @@ func NewAttributesResource(r TCResource) *AttributesResource {
 }
 
 func (r *AttributesResource) Id(id int) *AttributesResource {
-	r.attribute.Id = id
+	r.attribute.ID = id
 	r.Path(id)
 	return r
 }
 
-
 func (r *AttributesResource) Retrieve() ([]Attribute, error) {
-	if r.attribute.Id > 0 {
+	if r.attribute.ID > 0 {
 		grp, err := r.detail()
 		grps := []Attribute{grp.Data.Attributes}
 		return grps, err
@@ -97,13 +94,6 @@ func (r *AttributesResource) Update(g *Attribute) (Attribute, error) {
 	res, err := r.Response(grp).Put(g)
 	return grp.Data.Attributes, ResourceError(grp.Message, res, err)
 }
-
-
-
-
-
-
-
 
 //
 //

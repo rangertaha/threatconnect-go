@@ -23,14 +23,14 @@ import (
 
 func TestGroupAdversaries(t *testing.T) {
 	TCClient := New(TCConf)
-	var adversaryId int
+	var adversaryID int
 
 	{
 		adversary := &Adversary{Name: "Golang Adversary"}
 
 		res, err := TCClient.Groups().Adversaries().Create(adversary)
 		CheckResponse(t, err, "CREATE   /v2/groups/adversaries")
-		adversaryId = res.Id
+		adversaryID = res.ID
 
 		assert.IsType(t, res, Adversary{}, "")
 		assert.NoError(t, err, "")
@@ -38,8 +38,8 @@ func TestGroupAdversaries(t *testing.T) {
 
 	{
 		incident := &Adversary{Name: "Golang Adversary Update"}
-		res, err := TCClient.Groups().Adversaries(adversaryId).Update(incident)
-		CheckResponse(t, err, "UPDATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
+		res, err := TCClient.Groups().Adversaries(adversaryID).Update(incident)
+		CheckResponse(t, err, "UPDATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 
 		assert.IsType(t, res, Adversary{}, "")
 		assert.Equal(t, "Golang Adversary Update", res.Name, "")
@@ -47,8 +47,8 @@ func TestGroupAdversaries(t *testing.T) {
 	}
 
 	{
-		res, err := TCClient.Groups().Adversaries(adversaryId).Retrieve()
-		CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
+		res, err := TCClient.Groups().Adversaries(adversaryID).Retrieve()
+		CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 
 		assert.IsType(t, res, []Adversary{}, "")
 		assert.Equal(t, "Golang Adversary Update", res[0].Name, "")
@@ -56,52 +56,72 @@ func TestGroupAdversaries(t *testing.T) {
 	}
 
 	{
-		res, err := TCClient.Groups().Adversaries(adversaryId).Remove()
-		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
+		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
+		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 
 		assert.IsType(t, res, &DeleteResponse{}, "")
 		assert.NoError(t, err, "")
 	}
 
 }
-
 func TestGroupAdversaryAttributes(t *testing.T) {
 	TCClient := New(TCConf)
-	var adversaryId int
-	var attributeId int
+	var adversaryID, attributeID int
 
 	{
 		adversary := &Adversary{Name: "Golang Adversary"}
 		res, err := TCClient.Groups().Adversaries().Create(adversary)
-		adversaryId = res.Id
+		adversaryID = res.ID
 
 		assert.IsType(t, res, Adversary{}, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
-		incident := &Adversary{Name: "Golang Adversary Update"}
-		res, err := TCClient.Groups().Adversaries(adversaryId).Update(incident)
-		CheckResponse(t, err, "UPDATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
+		attribute := &Attribute{Type: "Description", Value: "Golang Adversary Attribute Create"}
+		res, err := TCClient.Groups().Adversaries(adversaryID).Attributes().Create(attribute)
+		CheckResponse(t, err, "CREATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID)+"/attributes")
+		//attributeID = res.ID
+
+		assert.IsType(t, res, Attribute{}, "")
+		assert.Equal(t, "Description", res.Type, "")
+		assert.Equal(t, "Golang Adversary Attribute Create", res.Value, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Groups().Adversaries(adversaryID).Attributes(attributeID).Remove()
+		path := "/v2/groups/adversaries/" + strconv.Itoa(adversaryID) + "/attributes/" + strconv.Itoa(attributeID)
+		CheckResponse(t, err, "DELETE   "+path)
+		assert.IsType(t, res, &DeleteResponse{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
+		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
+		assert.IsType(t, res, &DeleteResponse{}, "")
+		assert.NoError(t, err, "")
+	}
+
+}
+
+func TestGroupAdversaryAssets(t *testing.T) {
+	TCClient := New(TCConf)
+	var adversaryID int
+
+	{
+		adversary := &Adversary{Name: "Golang Adversary"}
+		res, err := TCClient.Groups().Adversaries().Create(adversary)
+		adversaryID = res.ID
 
 		assert.IsType(t, res, Adversary{}, "")
-		assert.Equal(t, "Golang Adversary Update", res.Name, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
-		res, err := TCClient.Groups().Adversaries(adversaryId).Retrieve()
-		CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
-
-		assert.IsType(t, res, []Adversary{}, "")
-		assert.Equal(t, "Golang Adversary Update", res[0].Name, "")
-		assert.NoError(t, err, "")
-	}
-
-	{
-		res, err := TCClient.Groups().Adversaries(adversaryId).Remove()
-		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryId))
-
+		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
+		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 		assert.IsType(t, res, &DeleteResponse{}, "")
 		assert.NoError(t, err, "")
 	}
