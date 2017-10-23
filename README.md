@@ -1,6 +1,18 @@
 ### threatconnect-go
 
 
+
+Clone project & enter pkg directory for testing
+
+```bash
+git clone git@github.com:rangertaha/threatconnect-go.git
+cd threatconnect-go/
+```
+
+
+
+Create a config file in the top level directory for testing
+
 ```bash
 cat >>threatconnect.yaml<<END
 API:
@@ -15,6 +27,10 @@ LOGGING:
 
 END
 ```
+
+
+
+Run tests to view the supported endpoints
 
 ```bash
 go test
