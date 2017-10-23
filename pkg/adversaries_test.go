@@ -86,6 +86,7 @@ func TestGroupAdversaryAttributes(t *testing.T) {
 		assert.IsType(t, res, Attribute{}, "")
 		assert.Equal(t, "Description", res.Type, "")
 		assert.Equal(t, "Golang Adversary Attribute Create", res.Value, "")
+<<<<<<< HEAD
 		assert.NoError(t, err, "")
 	}
 
@@ -116,10 +117,13 @@ func TestGroupAdversaryAssetPhoneNumbers(t *testing.T) {
 		adversaryID = res.ID
 
 		assert.IsType(t, res, Adversary{}, "")
+=======
+>>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 		assert.NoError(t, err, "")
 	}
 
 	{
+<<<<<<< HEAD
 		asset := &Asset{PhoneNumber: "123-123-1234"}
 		res, err := TCClient.Groups().Adversaries(adversaryID).Assets().PhoneNumbers().Create(asset)
 		CheckResponse(t, err, "CREATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID)+"/adversaryAssets/phoneNumbers")
@@ -170,10 +174,20 @@ func TestGroupAdversaryAssetPhoneNumbers(t *testing.T) {
 		assert.NoError(t, err, "")
 	}
 
+=======
+		res, err := TCClient.Groups().Adversaries(adversaryID).Attributes(attributeID).Remove()
+		path := "/v2/groups/adversaries/" + strconv.Itoa(adversaryID) + "/attributes/" + strconv.Itoa(attributeID)
+		CheckResponse(t, err, "DELETE   "+path)
+		assert.IsType(t, res, &DeleteResponse{}, "")
+		assert.NoError(t, err, "")
+	}
+
+>>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 	{
 		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
 		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 		assert.IsType(t, res, &DeleteResponse{}, "")
+<<<<<<< HEAD
 		assert.NoError(t, err, "")
 	}
 
@@ -189,10 +203,19 @@ func TestGroupAdversaryAssetUrls(t *testing.T) {
 		adversaryID = res.ID
 
 		assert.IsType(t, res, Adversary{}, "")
+=======
+>>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 		assert.NoError(t, err, "")
 	}
 
+}
+
+func TestGroupAdversaryAssets(t *testing.T) {
+	TCClient := New(TCConf)
+	var adversaryID int
+
 	{
+<<<<<<< HEAD
 		asset := &Asset{Url: "http://example.com/golang/testing"}
 		res, err := TCClient.Groups().Adversaries(adversaryID).Assets().Urls().Create(asset)
 		CheckResponse(t, err, "CREATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID)+"/adversaryAssets/urls")
@@ -253,11 +276,18 @@ func TestGroupAdversaryAssetHandles(t *testing.T) {
 		res, err := TCClient.Groups().Adversaries().Create(adversary)
 		adversaryID = res.ID
 
+=======
+		adversary := &Adversary{Name: "Golang Adversary"}
+		res, err := TCClient.Groups().Adversaries().Create(adversary)
+		adversaryID = res.ID
+
+>>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 		assert.IsType(t, res, Adversary{}, "")
 		assert.NoError(t, err, "")
 	}
 
 	{
+<<<<<<< HEAD
 		asset := &Asset{Handle: "example handles"}
 		res, err := TCClient.Groups().Adversaries(adversaryID).Assets().Handles().Create(asset)
 		CheckResponse(t, err, "CREATE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID)+"/adversaryAssets/handles")
@@ -301,6 +331,8 @@ func TestGroupAdversaryAssetHandles(t *testing.T) {
 	}
 
 	{
+=======
+>>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
 		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
 		assert.IsType(t, res, &DeleteResponse{}, "")
