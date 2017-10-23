@@ -21,13 +21,10 @@ type Asset struct {
 	Name    string `json:"name,omitempty"`
 	Type    string `json:"type,omitempty"`
 	WebLink string `json:"webLink,omitempty"`
-<<<<<<< HEAD
 
 	PhoneNumber string `json:"phoneNumber,omitempty"`
 	Handle      string `json:"handle,omitempty"`
 	Url         string `json:"url,omitempty"`
-=======
->>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 }
 
 type AssetResponseList struct {
@@ -55,7 +52,6 @@ func (r *AssetResource) Retrieve() ([]Asset, error) {
 	return asset.Data.Asset, ResourceError(asset.Message, res, err)
 }
 
-<<<<<<< HEAD
 func (r *AssetResource) PhoneNumbers(id ...int) *PhoneNumberResource {
 	if len(id) > 0 {
 		return NewPhoneNumberResource(r.TCResource).Id(id[0])
@@ -288,16 +284,4 @@ func (r *HandleResource) Update(g *Asset) (Asset, error) {
 	r.Response(grp)
 	_, err := r.Put(g)
 	return grp.Data.Handle, err
-=======
-func (r *AssetResource) PhoneNumbers(id ...int) {
-
-}
-
-func (r *AssetResource) Url(id ...int) {
-
-}
-
-func (r *AssetResource) Handles(id ...int) {
-
->>>>>>> 7f36e8cae6e0e011996ec5a83466db3dd59f9ba7
 }
