@@ -1,4 +1,12 @@
-### threatconnect-go
+# threatconnect-go
+
+
+# UNDER DEVELOPMENT
+
+   This project is under development and not ready for use. See below for list of supported endpoints. 
+
+
+
 
 
 
