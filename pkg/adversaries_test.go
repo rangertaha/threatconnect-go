@@ -152,7 +152,7 @@ func TestGroupAdversaryAssetPhoneNumbers(t *testing.T) {
 
 		assert.IsType(t, res, []Asset{}, "")
 		assert.NoError(t, err, "")
-	}
+	}cd 
 
 	{
 		res, err := TCClient.Groups().Adversaries(adversaryID).Assets().Retrieve()

@@ -29,7 +29,7 @@ import (
 var whoamiCmd = &cobra.Command{
 	Use:   "whoami",
 	Short: "Show your user information",
-	Long: `Show your user information`,
+	Long:  `Show your user information`,
 	Run: func(cmd *cobra.Command, args []string) {
 		SetupLogging(viper.GetString("LOGGING.LEVEL"))
 

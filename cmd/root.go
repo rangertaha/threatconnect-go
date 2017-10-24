@@ -30,7 +30,7 @@ var cfgFile, AccessId, DefaultOrg, SecretKey, BaseUrl, LogLevel, Version string
 var RootCmd = &cobra.Command{
 	Use:   "threatconnect",
 	Short: "Tool that allows users to access ThreatConnect data from a command-line shell.",
-	Long: `Tool that allows users to access ThreatConnect data from a command-line shell.`,
+	Long:  `Tool that allows users to access ThreatConnect data from a command-line shell.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

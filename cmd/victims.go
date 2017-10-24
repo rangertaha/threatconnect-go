@@ -24,7 +24,7 @@ import (
 var victimsCmd = &cobra.Command{
 	Use:   "victims",
 	Short: "Victims are used to describe a specific organization or group that has been targeted or whose assets have been exploited.",
-	Long: `Victims are used to describe a specific organization or group that has been targeted or whose assets have been exploited.`,
+	Long:  `Victims are used to describe a specific organization or group that has been targeted or whose assets have been exploited.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("victims called")
 	},

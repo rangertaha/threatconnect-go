@@ -24,7 +24,7 @@ import (
 var tagsCmd = &cobra.Command{
 	Use:   "tags",
 	Short: "Tags add metadata, or keywords, to intelligence data.",
-	Long: `Tags add metadata, or keywords, to intelligence data and provides a way to quickly identify or follow associated activities of a particular interest across the entire ThreatConnect platform.`,
+	Long:  `Tags add metadata, or keywords, to intelligence data and provides a way to quickly identify or follow associated activities of a particular interest across the entire ThreatConnect platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("tags called")
 	},

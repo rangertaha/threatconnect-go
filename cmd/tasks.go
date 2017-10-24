@@ -24,7 +24,7 @@ import (
 var tasksCmd = &cobra.Command{
 	Use:   "tasks",
 	Short: "The Task Group represents an assignment given to a ThreatConnect user.",
-	Long: `The Task Group represents an assignment given to a ThreatConnect user.`,
+	Long:  `The Task Group represents an assignment given to a ThreatConnect user.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("tasks called")
 	},

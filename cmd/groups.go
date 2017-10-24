@@ -30,7 +30,7 @@ import (
 var groupsCmd = &cobra.Command{
 	Use:   "groups",
 	Short: "Groups represent a collection of related behavior and/or intelligence",
-	Long: `Groups represent a collection of related behavior and/or intelligence`,
+	Long:  `Groups represent a collection of related behavior and/or intelligence`,
 	Run: func(cmd *cobra.Command, args []string) {
 		SetupLogging(viper.GetString("LOGGING.LEVEL"))
 

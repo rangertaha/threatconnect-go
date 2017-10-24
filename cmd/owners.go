@@ -24,7 +24,7 @@ import (
 var ownersCmd = &cobra.Command{
 	Use:   "owners",
 	Short: "Everything in the ThreatConnect platform exists within an Owner.",
-	Long: `Everything in the ThreatConnect platform exists within an Owner. Think of the owner as the bucket or location in which data exists.`,
+	Long:  `Everything in the ThreatConnect platform exists within an Owner. Think of the owner as the bucket or location in which data exists.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("owners called")
 	},
