@@ -15,13 +15,13 @@
 package main
 
 import (
-	"os"
 	"fmt"
+	"os"
 	//"net/http"
-	
-	"github.com/spf13/viper"
+
 	log "github.com/Sirupsen/logrus"
-	
+	"github.com/spf13/viper"
+
 	tc "github.com/rangertaha/threatconnect-go/pkg"
 	group "github.com/rangertaha/threatconnect-go/pkg/groups"
 )
@@ -106,9 +106,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-
-
-
 	//{
 	//	//     /v2/groups/{type}
 	//	obj, res, err := client.Groups().Adversaries().Get()
@@ -120,7 +117,6 @@ func main() {
 	//	obj, res, err := client.Groups().Adversaries(1054439).Get()
 	//	check(obj, res, err, "  GET:  /v2/groups/adversaries/1054439")
 	//}
-
 
 	//{
 	//	//     /v2/groups/{type}/{id}/attributes

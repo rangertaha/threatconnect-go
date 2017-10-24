@@ -23,20 +23,6 @@ import (
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
 	"github.com/spf13/viper"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
 
 func init() {
@@ -66,9 +52,6 @@ func main() {
 	//  /v2/owners/mine/members
 	//  /v2/owners/metrics
 	//  /v2/owners/{id}/metrics
-
-
-
 
 	log.Debug(client.Config.AccessId)
 	log.Debug(client.Config.SecretKey)

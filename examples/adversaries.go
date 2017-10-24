@@ -15,11 +15,11 @@
 package main
 
 import (
-	"os"
 	"fmt"
+	"os"
 
-	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
+	"github.com/spf13/viper"
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
 )
@@ -38,7 +38,6 @@ func init() {
 	//log.SetLevel(log.InfoLevel)
 }
 
-
 func main() {
 	client := tc.New(tc.TCConfig{
 		BaseUrl:    viper.GetString("API.BASE_URL"),
@@ -51,7 +50,7 @@ func main() {
 	var adversaryId int
 	{
 		adversary := &tc.Adversary{Name: "Golang Client"}
-		res,err := client.Groups().Adversaries().Create(adversary)
+		res, err := client.Groups().Adversaries().Create(adversary)
 		adversaryId = res.Id
 		fmt.Println("CREATE")
 		fmt.Println("Id", res.Id)

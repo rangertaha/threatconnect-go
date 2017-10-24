@@ -15,16 +15,15 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"os"
 
-	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
+	"github.com/spf13/viper"
 
 	tc "github.com/rangertaha/threatconnect-go/pkg"
-
 )
 
 func init() {
@@ -42,12 +41,12 @@ func init() {
 }
 
 func jsonPrettyPrint(in string) string {
-    var out bytes.Buffer
-    err := json.Indent(&out, []byte(in), "", "\t")
-    if err != nil {
-        return in
-    }
-    return out.String()
+	var out bytes.Buffer
+	err := json.Indent(&out, []byte(in), "", "\t")
+	if err != nil {
+		return in
+	}
+	return out.String()
 }
 
 func main() {
