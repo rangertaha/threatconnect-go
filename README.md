@@ -44,7 +44,15 @@ Run tests to view the supported endpoints
 go test
 ```
 
-The following Group related endpoints are available:
+
+
+
+
+
+# UNDER DEVELOPMENT
+
+
+
 
 ## Owners
 
@@ -59,6 +67,9 @@ The following Owner related endpoints are available:
 ## Groups
 
 The following Group types are available: **adversaries**, **campaigns**, **documents**, **emails**, **incidents**, **signatures**, **threats**
+
+
+The following Group related endpoints are available:
 
 - [x]  /v2/groups
 - [x]  /v2/groups/{type}
