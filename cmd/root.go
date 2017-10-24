@@ -47,7 +47,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.threatconnect.conf")
 	RootCmd.PersistentFlags().StringVar(&BaseUrl, "base_url", "", "base api endpoint")
-	RootCmd.PersistentFlags().StringVar(&AccessId, "access_id", "", "api accesss id")
+	RootCmd.PersistentFlags().StringVar(&AccessId, "access_id", "", "api access id")
 	RootCmd.PersistentFlags().StringVar(&SecretKey, "secret_key", "", "api secret key")
 	RootCmd.PersistentFlags().StringVar(&DefaultOrg, "org", "", "api default organization")
 	RootCmd.PersistentFlags().StringVar(&Version, "version", "v2", "api version")

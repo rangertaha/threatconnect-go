@@ -170,7 +170,6 @@ func TestGroupAdversaryAssetPhoneNumbers(t *testing.T) {
 		assert.NoError(t, err, "")
 	}
 
-
 	{
 		res, err := TCClient.Groups().Adversaries(adversaryID).Remove()
 		CheckResponse(t, err, "DELETE   /v2/groups/adversaries/"+strconv.Itoa(adversaryID))
@@ -193,7 +192,6 @@ func TestGroupAdversaryAssetUrls(t *testing.T) {
 		assert.IsType(t, res, Adversary{}, "")
 		assert.NoError(t, err, "")
 	}
-
 
 	{
 		asset := &Asset{Url: "http://example.com/golang/testing"}
