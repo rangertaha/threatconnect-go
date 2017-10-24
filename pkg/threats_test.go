@@ -23,7 +23,7 @@ import (
 
 func TestGroupThreat(t *testing.T) {
 	TCClient := New(TCConf)
-	var threatId int
+	var threatId, attributeID int
 
 	{
 		threat := &Threat{Name: "Golang Client Threat Group"}
@@ -33,6 +33,18 @@ func TestGroupThreat(t *testing.T) {
 		threatId = res.Id
 
 		assert.IsType(t, res, Threat{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		attribute := &Attribute{Type: "Description", Value: "Golang Threat Attribute Create"}
+		res, err := TCClient.Groups().Threats(threatId).Attributes().Create(attribute)
+		CheckResponse(t, err, "CREATE   /v2/groups/threats/"+strconv.Itoa(threatId)+"/attributes")
+		attributeID = res.ID
+
+		assert.IsType(t, res, Attribute{}, "")
+		assert.Equal(t, "Description", res.Type, "")
+		assert.Equal(t, "Golang Threat Attribute Create", res.Value, "")
 		assert.NoError(t, err, "")
 	}
 
@@ -52,6 +64,14 @@ func TestGroupThreat(t *testing.T) {
 
 		assert.IsType(t, res, []Threat{}, "")
 		assert.Equal(t, "Golang Client Threat Group Update", res[0].Name, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Groups().Threats(threatId).Attributes(attributeID).Remove()
+		path := "/v2/groups/threats/" + strconv.Itoa(threatId) + "/attributes/" + strconv.Itoa(attributeID)
+		CheckResponse(t, err, "DELETE   "+path)
+		assert.IsType(t, res, &DeleteResponse{}, "")
 		assert.NoError(t, err, "")
 	}
 

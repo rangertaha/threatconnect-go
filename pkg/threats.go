@@ -93,3 +93,10 @@ func (r *ThreatResource) Update(g *Threat) (Threat, error) {
 	res, err := r.Response(grp).Put(g)
 	return grp.Data.Threat, ResourceError(grp.Message, res, err)
 }
+
+func (r *ThreatResource) Attributes(id ...int) *AttributesResource {
+	if len(id) > 0 {
+		return NewAttributesResource(r.TCResource).Id(id[0])
+	}
+	return NewAttributesResource(r.TCResource)
+}

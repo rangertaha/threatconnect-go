@@ -23,7 +23,7 @@ import (
 
 func TestGroupSignatures(t *testing.T) {
 	TCClient := New(TCConf)
-	var signatureId int
+	var signatureId, attributeID int
 
 	{
 		signature := &Signature{
@@ -38,6 +38,18 @@ func TestGroupSignatures(t *testing.T) {
 		signatureId = res.Id
 
 		assert.IsType(t, res, Signature{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		attribute := &Attribute{Type: "Description", Value: "Golang Signature Attribute Create"}
+		res, err := TCClient.Groups().Signatures(signatureId).Attributes().Create(attribute)
+		CheckResponse(t, err, "CREATE   /v2/groups/signatures/"+strconv.Itoa(signatureId)+"/attributes")
+		attributeID = res.ID
+
+		assert.IsType(t, res, Attribute{}, "")
+		assert.Equal(t, "Description", res.Type, "")
+		assert.Equal(t, "Golang Signature Attribute Create", res.Value, "")
 		assert.NoError(t, err, "")
 	}
 
@@ -62,6 +74,14 @@ func TestGroupSignatures(t *testing.T) {
 
 		assert.IsType(t, res, []Signature{}, "")
 		assert.Equal(t, "Golang Client Update", res[0].Name, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		res, err := TCClient.Groups().Signatures(signatureId).Attributes(attributeID).Remove()
+		path := "/v2/groups/incidents/" + strconv.Itoa(signatureId) + "/attributes/" + strconv.Itoa(attributeID)
+		CheckResponse(t, err, "DELETE   "+path)
+		assert.IsType(t, res, &DeleteResponse{}, "")
 		assert.NoError(t, err, "")
 	}
 
