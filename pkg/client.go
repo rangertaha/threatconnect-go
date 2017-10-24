@@ -129,15 +129,13 @@ func (t *ThreatConnectClient) WhoAmI() (User, error) {
 	return NewWhoAmI(t).WhoAmI()
 }
 
-func (t *ThreatConnectClient) SecurityLabel(id ...string) *SecurityLabelsResource {
-	resource := &SecurityLabelsResource{
-		TCResource{
+func (t *ThreatConnectClient) SecurityLabels() *SecurityLabelsResource {
+	return &SecurityLabelsResource{
+		TCResource: TCResource{
 			TC:   t,
 			base: path.Join(t.Config.Version, "securityLabels"),
-			resp: new(SecurityLabelResponseList),
 		},
 	}
-	return resource.SecurityLabels(id...)
 }
 
 func (t *ThreatConnectClient) Tags(id ...string) *TagsResource {

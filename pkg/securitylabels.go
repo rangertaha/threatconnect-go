@@ -1,22 +1,28 @@
-// Copyright © 2017 rangertaha <rangertaha@gmail.com>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// The MIT License (MIT)
+
+// Copyright (c) 2016 rangertaha
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 package threatconnect
 
-import (
-	"encoding/json"
-)
+//"encoding/json"
 
 type SecurityLabel struct {
 	Name        string `json:"name,omitempty"`
@@ -25,27 +31,71 @@ type SecurityLabel struct {
 	DateAdded   string `json:"dateAdded,omitempty"`
 }
 
-type SecurityLabelResponseList struct {
+type SecurityLabelsResponseList struct {
 	Status string `json:"status,omitempty"`
 	Data   struct {
-		ResultCount    int             `json:"resultCount,omitempty"`
-		SecurityLabels []SecurityLabel `json:"securityLabel,omitempty"`
+		ResultCount   int             `json:"resultCount,omitempty"`
+		SecurityLabel []SecurityLabel `json:"securityLabel,omitempty"`
 	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+}
+
+type SecurityLabelsResponseDetail struct {
+	Status string `json:"status,omitempty"`
+	Data   struct {
+		ResultCount   int           `json:"resultCount,omitempty"`
+		SecurityLabel SecurityLabel `json:"securityLabel,omitempty"`
+	} `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type SecurityLabelsResource struct {
 	TCResource
+	securityLabel SecurityLabel
 }
 
-func NewSecurityLabels(r TCResource) *SecurityLabelsResource {
+func NewSecurityLabelsResource(r TCResource) *SecurityLabelsResource {
 	r.Path("securityLabels")
-	return &SecurityLabelsResource{r}
+	return &SecurityLabelsResource{TCResource: r}
 }
 
-func (r *SecurityLabelsResource) SecurityLabels(id ...string) *SecurityLabelsResource {
-	r.Response(new(json.RawMessage))
-	if len(id) == 1 {
-		r.Path(id[0])
-	}
+func (r *SecurityLabelsResource) Id(name string) *SecurityLabelsResource {
+	r.securityLabel.Name = name
+	r.Path(name)
 	return r
+}
+
+func (r *SecurityLabelsResource) Retrieve() ([]SecurityLabel, error) {
+	if r.securityLabel.Name != "" {
+		resp, err := r.detail()
+		res := []SecurityLabel{resp.Data.SecurityLabel}
+		return res, err
+	}
+
+	resp, err := r.list()
+	return resp.Data.SecurityLabel, err
+}
+
+func (r *SecurityLabelsResource) detail() (*SecurityLabelsResponseDetail, error) {
+	resp := &SecurityLabelsResponseDetail{}
+	res, err := r.Response(resp).Get()
+	return resp, ResourceError(resp.Message, res, err)
+}
+
+func (r *SecurityLabelsResource) list() (*SecurityLabelsResponseList, error) {
+	grp := &SecurityLabelsResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *SecurityLabelsResource) Create(g *SecurityLabel) (SecurityLabel, error) {
+	grp := &SecurityLabelsResponseDetail{}
+	res, err := r.Response(grp).Post(g)
+	return grp.Data.SecurityLabel, ResourceError(grp.Message, res, err)
+}
+
+func (r *SecurityLabelsResource) Update(g *SecurityLabel) (SecurityLabel, error) {
+	grp := &SecurityLabelsResponseDetail{}
+	res, err := r.Response(grp).Put(g)
+	return grp.Data.SecurityLabel, ResourceError(grp.Message, res, err)
 }

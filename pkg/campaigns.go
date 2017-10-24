@@ -110,3 +110,10 @@ func (r *CampaignResource) Attributes(id ...int) *AttributesResource {
 	}
 	return NewAttributesResource(r.TCResource)
 }
+
+func (r *CampaignResource) SecurityLabels(name ...string) *SecurityLabelsResource {
+	if len(name) > 0 {
+		return NewSecurityLabelsResource(r.TCResource).Id(name[0])
+	}
+	return NewSecurityLabelsResource(r.TCResource)
+}

@@ -21,3 +21,19 @@
 // SOFTWARE.
 
 package threatconnect
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestSecurityLabel(t *testing.T) {
+	TCClient := New(TCConf)
+
+	res, err := TCClient.SecurityLabels().Retrieve()
+	CheckResponse(t, err, "RETRIEVE /v2/securityLabels")
+
+	assert.IsType(t, res, []SecurityLabel{}, "")
+	assert.NoError(t, err, "")
+}

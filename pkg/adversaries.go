@@ -114,3 +114,10 @@ func (r *AdversaryResource) Attributes(id ...int) *AttributesResource {
 func (r *AdversaryResource) Assets() *AssetResource {
 	return NewAssetResourceResource(r.TCResource)
 }
+
+func (r *AdversaryResource) SecurityLabels(name ...string) *SecurityLabelsResource {
+	if len(name) > 0 {
+		return NewSecurityLabelsResource(r.TCResource).Id(name[0])
+	}
+	return NewSecurityLabelsResource(r.TCResource)
+}
