@@ -113,12 +113,7 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 }
 
 func (t *ThreatConnectClient) Types() *TypesResource {
-	return &TypesResource{
-		TCResource: TCResource{
-			TC:   t,
-			base: path.Join(t.Config.Version, "types"),
-		},
-	}
+	return NewTypesResource(t)
 }
 
 func (t *ThreatConnectClient) Owners(id ...int) *OwnerResource {
@@ -129,13 +124,14 @@ func (t *ThreatConnectClient) WhoAmI() (User, error) {
 	return NewWhoAmI(t).WhoAmI()
 }
 
-func (t *ThreatConnectClient) SecurityLabels() *SecurityLabelsResource {
-	return &SecurityLabelsResource{
+func (t *ThreatConnectClient) SecurityLabels(id ...string) *SecurityLabelsResource {
+	resource := &SecurityLabelsResource{
 		TCResource: TCResource{
 			TC:   t,
 			base: path.Join(t.Config.Version, "securityLabels"),
 		},
 	}
+	return resource.Id(id...)
 }
 
 func (t *ThreatConnectClient) Tags(id ...string) *TagsResource {

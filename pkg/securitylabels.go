@@ -49,6 +49,8 @@ type SecurityLabelsResponseDetail struct {
 	Message string `json:"message,omitempty"`
 }
 
+
+
 type SecurityLabelsResource struct {
 	TCResource
 	securityLabel SecurityLabel
@@ -59,9 +61,11 @@ func NewSecurityLabelsResource(r TCResource) *SecurityLabelsResource {
 	return &SecurityLabelsResource{TCResource: r}
 }
 
-func (r *SecurityLabelsResource) Id(name string) *SecurityLabelsResource {
-	r.securityLabel.Name = name
-	r.Path(name)
+func (r *SecurityLabelsResource) Id(name ...string) *SecurityLabelsResource {
+	if len(name) > 0 {
+		r.securityLabel.Name = name[0]
+		r.Path(name[0])
+	}
 	return r
 }
 
@@ -88,14 +92,18 @@ func (r *SecurityLabelsResource) list() (*SecurityLabelsResponseList, error) {
 	return grp, ResourceError(grp.Message, res, err)
 }
 
-func (r *SecurityLabelsResource) Create(g *SecurityLabel) (SecurityLabel, error) {
-	grp := &SecurityLabelsResponseDetail{}
-	res, err := r.Response(grp).Post(g)
-	return grp.Data.SecurityLabel, ResourceError(grp.Message, res, err)
-}
+// func (r *SecurityLabelsResource) Create() (SecurityLabelsResponseDetail, error) {
+// 	resp := &SecurityLabelsResponseDetail{}
+// 	res, err := r.Post(g)
+// 	return resp, ResourceError(grp.Message, res, err)
+// }
 
-func (r *SecurityLabelsResource) Update(g *SecurityLabel) (SecurityLabel, error) {
-	grp := &SecurityLabelsResponseDetail{}
-	res, err := r.Response(grp).Put(g)
-	return grp.Data.SecurityLabel, ResourceError(grp.Message, res, err)
+// func (r *SecurityLabelsResource) Update(g *SecurityLabel) (SecurityLabel, error) {
+// 	grp := &SecurityLabelsResponseDetail{}
+// 	res, err := r.Response(grp).Put(g)
+// 	return grp.Data.SecurityLabel, ResourceError(grp.Message, res, err)
+// }
+
+func (r *SecurityLabelsResource) Groups() *AssociatedGroupResource {
+	return NewAssociatedGroupResource(r.TCResource)
 }

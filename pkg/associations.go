@@ -20,73 +20,150 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// AssociationTypes represent a collection of related behavior and/or intelligence.
+// Groups represent a collection of related behavior and/or intelligence.
 package threatconnect
 
-import (
-//"errors"
-)
+// type AssociatedGroup struct {
+// 	Id        int    `json:"id,omitempty"`
+// 	Name      string `json:"name,omitempty"`
+// 	OwnerName string `json:"ownerName,omitempty"`
+// 	DateAdded string `json:"dateAdded,omitempty"`
+// 	WebLink   string `json:"webLink,omitempty"`
+// 	EventDate string `json:"eventDate,omitempty"`
+// }
 
-type AssociationType struct {
-	Name       string `json:"name,omitempty"`
-	Custom     string `json:"custom,omitempty"`
-	FileAction string `json:"fileAction,omitempty"`
-	ApiBranch  string `json:"apiBranch,omitempty"`
+type AssociatedGroupResponse struct {
+	ApiCalls    int    `json:"apiCalls,omitempty"`
+	Status      string `json:"status,omitempty"`
+	ResultCount int    `json:"resultCount,omitempty"`
+	Message     string `json:"message,omitempty"`
 }
 
-type AssociationTypeResponseList struct {
-	Status string `json:"status,omitempty"`
-	Data   struct {
-		ResultCount     int               `json:"resultCount,omitempty"`
-		AssociationType []AssociationType `json:"associationType,omitempty"`
-	} `json:"data,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
-type AssociationTypeResponseDetail struct {
-	Status string `json:"status,omitempty"`
-	Data   struct {
-		ResultCount     int             `json:"resultCount,omitempty"`
-		AssociationType AssociationType `json:"associationType,omitempty"`
-	} `json:"data,omitempty"`
-	Message string `json:"message,omitempty"`
-}
-
-type AssociationTypeResource struct {
-	associationTypeName string
+type AssociatedGroupResource struct {
 	TCResource
 }
 
-func NewAssociationTypeResource(r TCResource) *AssociationTypeResource {
-	r.Path("associationTypes")
-	return &AssociationTypeResource{TCResource: r}
+func NewAssociatedGroupResource(r TCResource) *AssociatedGroupResource {
+	r.Path("groups")
+	return &AssociatedGroupResource{TCResource: r}
 }
 
-func (r *AssociationTypeResource) Name(name string) *AssociationTypeResource {
-	r.associationTypeName = name
+func (r *AssociatedGroupResource) Retrieve() ([]Group, error) {
+	group := &GroupResponseList{}
+	r.Response(group)
+	res, err := r.TCResource.Get()
+	return group.Data.Groups, ResourceError(group.Message, res, err)
+}
+
+func (r *AssociatedGroupResource) Create() (*AssociatedGroupResponse, error) {
+	resp := &AssociatedGroupResponse{}
+	res, err := r.Response(resp).Method("POST").Request()
+	return resp, ResourceError(resp.Message, res, err)
+}
+
+func (r *AssociatedGroupResource) Type(name string) *AssociatedGroupResource {
 	r.Path(name)
 	return r
 }
 
-func (r *AssociationTypeResource) Retrieve() ([]AssociationType, error) {
-	if r.associationTypeName != "" {
-		detail, err := r.detail()
-		list := []AssociationType{detail.Data.AssociationType}
-		return list, err
+func (r *AssociatedGroupResource) Id(id int) *AssociatedGroupResource {
+	r.Path(id)
+	return r
+}
+
+// func (r *AssociatedGroupResource) Adversaries(id ...int) *AssociatedAdversaryResource {
+// 	return NewAssociatedAdversaryResource(r).Id(id...)
+// }
+
+func (r *AssociatedGroupResource) Incidents(id ...int) *AssociatedGroupResource {
+	r.Type("incidents")
+	if len(id) > 0 {
+		return r.Id(id[0])
 	}
-
-	list, err := r.list()
-	return list.Data.AssociationType, err
+	return r
 }
 
-func (r *AssociationTypeResource) detail() (*AssociationTypeResponseDetail, error) {
-	detail := &AssociationTypeResponseDetail{}
-	res, err := r.Response(detail).Get()
-	return detail, ResourceError(detail.Message, res, err)
+func (r *AssociatedGroupResource) Threats(id ...int) *AssociatedGroupResource {
+	r.Type("threats")
+	if len(id) > 0 {
+		return r.Id(id[0])
+	}
+	return r
 }
 
-func (r *AssociationTypeResource) list() (*AssociationTypeResponseList, error) {
-	list := &AssociationTypeResponseList{}
-	res, err := r.Response(list).Get()
-	return list, ResourceError(list.Message, res, err)
+func (r *AssociatedGroupResource) Emails(id ...int) *AssociatedGroupResource {
+	r.Type("emails")
+	if len(id) > 0 {
+		return r.Id(id[0])
+	}
+	return r
 }
+
+func (r *AssociatedGroupResource) Campaigns(id ...int) *AssociatedGroupResource {
+	r.Type("campaigns")
+	if len(id) > 0 {
+		return r.Id(id[0])
+	}
+	return r
+}
+
+func (r *AssociatedGroupResource) Signatures(id ...int) *AssociatedGroupResource {
+	r.Type("signatures")
+	if len(id) > 0 {
+		return r.Id(id[0])
+	}
+	return r
+}
+
+func (r *AssociatedGroupResource) Documents(id ...int) *AssociatedGroupResource {
+	r.Type("documents")
+	if len(id) > 0 {
+		return r.Id(id[0])
+	}
+	return r
+}
+
+// type AssociatedAdversaryResource struct {
+// 	AssociatedGroupResource
+// }
+
+// func NewAssociatedAdversaryResource(r AssociatedGroupResource) *AssociatedAdversaryResource {
+// 	r.Type("adversaries")
+// 	return &AssociatedAdversaryResource{r}
+// }
+// func (r *AssociatedAdversaryResource) Id(id ...int) *AssociatedAdversaryResource {
+// 	if len(id) > 0 {
+// 		r.Path(id[0])
+// 	}
+// 	return r
+// }
+
+// func (r *AssociatedAdversaryResource) Retrieve() ([]Adversary, error) {
+// 	if len(id) > 0 {
+// 		r.Path(id[0])
+// 	}
+// 	return r
+// }
+
+// func (r *AttributesResource) Retrieve() ([]Attribute, error) {
+// 	if r.attribute.ID > 0 {
+// 		grp, err := r.detail()
+// 		grps := []Attribute{grp.Data.Attributes}
+// 		return grps, err
+// 	}
+
+// 	grps, err := r.list()
+// 	return grps.Data.Attributes, err
+// }
+
+// func (r *AttributesResource) detail() (*AttributeResponseDetail, error) {
+// 	grp := &AttributeResponseDetail{}
+// 	res, err := r.Response(grp).Get()
+// 	return grp, ResourceError(grp.Message, res, err)
+// }
+
+// func (r *AttributesResource) list() (*AttributesResponseList, error) {
+// 	grp := &AttributesResponseList{}
+// 	res, err := r.Response(grp).Get()
+// 	return grp, ResourceError(grp.Message, res, err)
+// }

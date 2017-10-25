@@ -21,22 +21,3 @@
 // SOFTWARE.
 
 package threatconnect
-
-import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-)
-
-func TestTypesAssociationType(t *testing.T) {
-	TCClient := New(TCConf)
-
-	{
-		res, err := TCClient.Types().AssociationType().Retrieve()
-		CheckResponse(t, err, "RETRIEVE /v2/types/associationTypes")
-
-		assert.IsType(t, res, []AssociationType{}, "")
-		//assert.Equal(t, "Golang Client Update", res[0].Name, "")
-		assert.NoError(t, err, "")
-	}
-}
