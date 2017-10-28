@@ -39,8 +39,18 @@ type AssociatedGroupResponse struct {
 	Message     string `json:"message,omitempty"`
 }
 
+type AssociatedAdversary struct {
+	ID        int    `json:"id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Owner     Owner  `json:"owner,omitempty"`
+	DateAdded string `json:"dateAdded,omitempty"`
+	WebLink   string `json:"webLink,omitempty"`
+	EventDate string `json:"eventDate,omitempty"`
+}
+
 type AssociatedGroupResource struct {
 	TCResource
+	group Group
 }
 
 func NewAssociatedGroupResource(r TCResource) *AssociatedGroupResource {
@@ -66,104 +76,227 @@ func (r *AssociatedGroupResource) Type(name string) *AssociatedGroupResource {
 	return r
 }
 
-func (r *AssociatedGroupResource) Id(id int) *AssociatedGroupResource {
-	r.Path(id)
-	return r
-}
-
-// func (r *AssociatedGroupResource) Adversaries(id ...int) *AssociatedAdversaryResource {
-// 	return NewAssociatedAdversaryResource(r).Id(id...)
-// }
-
-func (r *AssociatedGroupResource) Incidents(id ...int) *AssociatedGroupResource {
-	r.Type("incidents")
+func (r *AssociatedGroupResource) Id(id ...int) *AssociatedGroupResource {
 	if len(id) > 0 {
-		return r.Id(id[0])
+		r.Path(id[0])
+		r.group.Id = id[0]
 	}
 	return r
 }
 
-func (r *AssociatedGroupResource) Threats(id ...int) *AssociatedGroupResource {
-	r.Type("threats")
-	if len(id) > 0 {
-		return r.Id(id[0])
-	}
-	return r
+func (r *AssociatedGroupResource) Adversaries(id ...int) *AssociatedAdversaryResource {
+	r.Type("adversaries").Id(id...)
+	return &AssociatedAdversaryResource{*r}
 }
 
-func (r *AssociatedGroupResource) Emails(id ...int) *AssociatedGroupResource {
-	r.Type("emails")
-	if len(id) > 0 {
-		return r.Id(id[0])
-	}
-	return r
+func (r *AssociatedGroupResource) Campaigns(id ...int) *AssociatedCampaignResource {
+	r.Type("campaigns").Id(id...)
+	return &AssociatedCampaignResource{*r}
 }
 
-func (r *AssociatedGroupResource) Campaigns(id ...int) *AssociatedGroupResource {
-	r.Type("campaigns")
-	if len(id) > 0 {
-		return r.Id(id[0])
-	}
-	return r
+func (r *AssociatedGroupResource) Documents(id ...int) *AssociatedDocumentResource {
+	r.Type("documents").Id(id...)
+	return &AssociatedDocumentResource{*r}
 }
 
-func (r *AssociatedGroupResource) Signatures(id ...int) *AssociatedGroupResource {
-	r.Type("signatures")
-	if len(id) > 0 {
-		return r.Id(id[0])
-	}
-	return r
+func (r *AssociatedGroupResource) Emails(id ...int) *AssociatedEmailResource {
+	r.Type("emails").Id(id...)
+	return &AssociatedEmailResource{*r}
 }
 
-func (r *AssociatedGroupResource) Documents(id ...int) *AssociatedGroupResource {
-	r.Type("documents")
-	if len(id) > 0 {
-		return r.Id(id[0])
-	}
-	return r
+func (r *AssociatedGroupResource) Incidents(id ...int) *AssociatedIncidentsResource {
+	r.Type("incidents").Id(id...)
+	return &AssociatedIncidentsResource{*r}
 }
 
-// type AssociatedAdversaryResource struct {
-// 	AssociatedGroupResource
-// }
+func (r *AssociatedGroupResource) Signatures(id ...int) *AssociatedSignaturesResource {
+	r.Type("signatures").Id(id...)
+	return &AssociatedSignaturesResource{*r}
+}
 
-// func NewAssociatedAdversaryResource(r AssociatedGroupResource) *AssociatedAdversaryResource {
-// 	r.Type("adversaries")
-// 	return &AssociatedAdversaryResource{r}
-// }
-// func (r *AssociatedAdversaryResource) Id(id ...int) *AssociatedAdversaryResource {
-// 	if len(id) > 0 {
-// 		r.Path(id[0])
-// 	}
-// 	return r
-// }
+func (r *AssociatedGroupResource) Threats(id ...int) *AssociatedThreatsResource {
+	r.Type("threats").Id(id...)
+	return &AssociatedThreatsResource{*r}
+}
 
-// func (r *AssociatedAdversaryResource) Retrieve() ([]Adversary, error) {
-// 	if len(id) > 0 {
-// 		r.Path(id[0])
-// 	}
-// 	return r
-// }
+type AssociatedAdversaryResource struct {
+	AssociatedGroupResource
+}
 
-// func (r *AttributesResource) Retrieve() ([]Attribute, error) {
-// 	if r.attribute.ID > 0 {
-// 		grp, err := r.detail()
-// 		grps := []Attribute{grp.Data.Attributes}
-// 		return grps, err
-// 	}
+func (r *AssociatedAdversaryResource) Retrieve() ([]Adversary, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Adversary{grp.Data.Adversary}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Adversary, err
+}
 
-// 	grps, err := r.list()
-// 	return grps.Data.Attributes, err
-// }
+func (r *AssociatedAdversaryResource) detail() (*AdversaryResponseDetail, error) {
+	grp := &AdversaryResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
 
-// func (r *AttributesResource) detail() (*AttributeResponseDetail, error) {
-// 	grp := &AttributeResponseDetail{}
-// 	res, err := r.Response(grp).Get()
-// 	return grp, ResourceError(grp.Message, res, err)
-// }
+func (r *AssociatedAdversaryResource) list() (*AdversaryResponseList, error) {
+	grp := &AdversaryResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
 
-// func (r *AttributesResource) list() (*AttributesResponseList, error) {
-// 	grp := &AttributesResponseList{}
-// 	res, err := r.Response(grp).Get()
-// 	return grp, ResourceError(grp.Message, res, err)
-// }
+type AssociatedCampaignResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedCampaignResource) Retrieve() ([]Campaign, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Campaign{grp.Data.Campaign}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Campaign, err
+}
+
+func (r *AssociatedCampaignResource) detail() (*CampaignResponseDetail, error) {
+	grp := &CampaignResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedCampaignResource) list() (*CampaignResponseList, error) {
+	grp := &CampaignResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+type AssociatedDocumentResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedDocumentResource) Retrieve() ([]Document, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Document{grp.Data.Document}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Document, err
+}
+
+func (r *AssociatedDocumentResource) detail() (*DocumentResponseDetail, error) {
+	grp := &DocumentResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedDocumentResource) list() (*DocumentResponseList, error) {
+	grp := &DocumentResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+type AssociatedEmailResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedEmailResource) Retrieve() ([]Email, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Email{grp.Data.Email}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Email, err
+}
+
+func (r *AssociatedEmailResource) detail() (*EmailResponseDetail, error) {
+	grp := &EmailResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedEmailResource) list() (*EmailResponseList, error) {
+	grp := &EmailResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+type AssociatedIncidentsResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedIncidentsResource) Retrieve() ([]Incident, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Incident{grp.Data.Incident}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Incident, err
+}
+
+func (r *AssociatedIncidentsResource) detail() (*IncidentResponseDetail, error) {
+	grp := &IncidentResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedIncidentsResource) list() (*IncidentResponseList, error) {
+	grp := &IncidentResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+type AssociatedSignaturesResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedSignaturesResource) Retrieve() ([]Signature, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Signature{grp.Data.Signature}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Signature, err
+}
+
+func (r *AssociatedSignaturesResource) detail() (*SignatureResponseDetail, error) {
+	grp := &SignatureResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedSignaturesResource) list() (*SignatureResponseList, error) {
+	grp := &SignatureResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+type AssociatedThreatsResource struct {
+	AssociatedGroupResource
+}
+
+func (r *AssociatedThreatsResource) Retrieve() ([]Threat, error) {
+	if r.group.Id > 0 {
+		grp, err := r.detail()
+		grps := []Threat{grp.Data.Threat}
+		return grps, err
+	}
+	grps, err := r.list()
+	return grps.Data.Threat, err
+}
+
+func (r *AssociatedThreatsResource) detail() (*ThreatResponseDetail, error) {
+	grp := &ThreatResponseDetail{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}
+
+func (r *AssociatedThreatsResource) list() (*ThreatResponseList, error) {
+	grp := &ThreatResponseList{}
+	res, err := r.Response(grp).Get()
+	return grp, ResourceError(grp.Message, res, err)
+}

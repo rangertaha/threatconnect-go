@@ -22,7 +22,6 @@
 
 package threatconnect
 
-//"encoding/json"
 
 type SecurityLabel struct {
 	Name        string `json:"name,omitempty"`
@@ -48,8 +47,6 @@ type SecurityLabelsResponseDetail struct {
 	} `json:"data,omitempty"`
 	Message string `json:"message,omitempty"`
 }
-
-
 
 type SecurityLabelsResource struct {
 	TCResource

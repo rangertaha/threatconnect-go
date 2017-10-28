@@ -66,15 +66,12 @@ func TestSecurityLabelsGroups(t *testing.T) {
 
 				assert.IsType(t, res, []Group{}, "")
 				assert.NoError(t, err, "")
-
 			}
-
 		}
-
 	}
-
 }
-func TestSecurityLabelsAssociatedGroupType(t *testing.T) {
+
+func TestSecurityLabelsAssociatedAdversaries(t *testing.T) {
 	TCClient := New(TCConf)
 	var labels []SecurityLabel
 	{
@@ -100,88 +97,339 @@ func TestSecurityLabelsAssociatedGroupType(t *testing.T) {
 
 				assert.IsType(t, res, []Group{}, "")
 				assert.NoError(t, err, "")
-
 			}
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Adversaries().Retrieve()
 				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/adversaries")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Adversary{}, "")
 				assert.NoError(t, err, "")
 
 				for _, g := range res {
-					res, err := TCClient.SecurityLabels(s.Name).Groups().Adversaries(g.Id).Retrieve()
-					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/adversaries/"+strconv.Itoa(g.Id))
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Adversaries(g.ID).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/adversaries/"+strconv.Itoa(g.ID))
 
-					assert.IsType(t, res, Adversary{}, "")
+					assert.IsType(t, res, []Adversary{}, "")
 					assert.NoError(t, err, "")
 				}
 
 			}
 
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Campaigns().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// 	for _, g := range res {
+			// 		res, err := TCClient.SecurityLabels(s.Name).Groups().Campaigns(g.Id).Retrieve()
+			// 		CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns"+strconv.Itoa(g.Id))
+
+			// 		assert.IsType(t, res, Adversary{}, "")
+			// 		assert.NoError(t, err, "")
+			// 	}
+
+			// }
+
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Documents().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/documents") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// }
+
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Emails().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/emails") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// }
+
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Incidents().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/incidents") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// }
+
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Signatures().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/signatures") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// }
+
+			// {
+			// 	res, err := TCClient.SecurityLabels(s.Name).Groups().Threats().Retrieve()
+			// 	CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/threats") //+strconv.Itoa(gt.Id))
+
+			// 	assert.IsType(t, res, []Group{}, "")
+			// 	assert.NoError(t, err, "")
+
+			// }
+
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedCampaigns(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
+
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Campaigns().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Campaign{}, "")
 				assert.NoError(t, err, "")
 
 				for _, g := range res {
 					res, err := TCClient.SecurityLabels(s.Name).Groups().Campaigns(g.Id).Retrieve()
-					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns"+strconv.Itoa(g.Id))
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/campaigns/"+strconv.Itoa(g.Id))
 
-					assert.IsType(t, res, Adversary{}, "")
+					assert.IsType(t, res, []Campaign{}, "")
 					assert.NoError(t, err, "")
 				}
 
 			}
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedDocuments(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Documents().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/documents") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/documents")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Document{}, "")
 				assert.NoError(t, err, "")
 
+				for _, g := range res {
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Documents(g.Id).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/documents/"+strconv.Itoa(g.Id))
+
+					assert.IsType(t, res, []Document{}, "")
+					assert.NoError(t, err, "")
+				}
+
 			}
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedEmails(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Emails().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/emails") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/emails")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Email{}, "")
 				assert.NoError(t, err, "")
 
+				for _, g := range res {
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Emails(g.Id).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/emails/"+strconv.Itoa(g.Id))
+
+					assert.IsType(t, res, []Email{}, "")
+					assert.NoError(t, err, "")
+				}
+
 			}
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedIncedents(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Incidents().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/incidents") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/incidents")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Incident{}, "")
 				assert.NoError(t, err, "")
 
+				for _, g := range res {
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Incidents(g.Id).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/incidents/"+strconv.Itoa(g.Id))
+
+					assert.IsType(t, res, []Incident{}, "")
+					assert.NoError(t, err, "")
+				}
+
 			}
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedSignatures(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Signatures().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/signatures") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/signatures")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Signature{}, "")
 				assert.NoError(t, err, "")
 
+				for _, g := range res {
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Signatures(g.Id).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/signatures/"+strconv.Itoa(g.Id))
+
+					assert.IsType(t, res, []Signature{}, "")
+					assert.NoError(t, err, "")
+				}
+
 			}
+		}
+
+	}
+
+}
+
+func TestSecurityLabelsAssociatedThreats(t *testing.T) {
+	TCClient := New(TCConf)
+	var labels []SecurityLabel
+	{
+		res, err := TCClient.SecurityLabels().Retrieve()
+		labels = res
+
+		assert.IsType(t, res, []SecurityLabel{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range labels {
+			res, err := TCClient.SecurityLabels(s.Name).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, SecurityLabel{}, "")
+			assert.IsType(t, res, []SecurityLabel{}, "")
+			assert.NoError(t, err, "")
 
 			{
 				res, err := TCClient.SecurityLabels(s.Name).Groups().Threats().Retrieve()
-				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/threats") //+strconv.Itoa(gt.Id))
+				CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/threats")
 
-				assert.IsType(t, res, []Group{}, "")
+				assert.IsType(t, res, []Threat{}, "")
 				assert.NoError(t, err, "")
 
-			}
+				for _, g := range res {
+					res, err := TCClient.SecurityLabels(s.Name).Groups().Threats(g.Id).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name+"/groups/threats/"+strconv.Itoa(g.Id))
 
+					assert.IsType(t, res, []Threat{}, "")
+					assert.NoError(t, err, "")
+				}
+
+			}
 		}
 
 	}
