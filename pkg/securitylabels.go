@@ -22,7 +22,6 @@
 
 package threatconnect
 
-
 type SecurityLabel struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
@@ -102,5 +101,6 @@ func (r *SecurityLabelsResource) list() (*SecurityLabelsResponseList, error) {
 // }
 
 func (r *SecurityLabelsResource) Groups() *AssociatedGroupResource {
+	r.Path("groups")
 	return NewAssociatedGroupResource(r.TCResource)
 }

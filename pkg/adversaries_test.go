@@ -317,3 +317,50 @@ func TestGroupAdversaryAssetHandles(t *testing.T) {
 	}
 
 }
+
+func TestGroupAssociatedAdversary(t *testing.T) {
+	TCClient := New(TCConf)
+	var adversaries []Adversary
+	{
+		res, err := TCClient.Groups().Adversaries().Retrieve()
+		adversaries = res
+
+		assert.IsType(t, res, []Adversary{}, "")
+		assert.NoError(t, err, "")
+	}
+
+	{
+		for _, s := range adversaries {
+			res, err := TCClient.Groups().Adversaries(s.ID).Retrieve()
+			// CheckResponse(t, err, "RETRIEVE /v2/securityLabels/"+s.Name)
+
+			assert.IsType(t, s, Adversary{}, "")
+			assert.IsType(t, res, []Adversary{}, "")
+			assert.NoError(t, err, "")
+
+			{
+				res, err := TCClient.Groups().Adversaries(s.ID).Groups().Retrieve()
+				CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(s.ID)+"/groups")
+
+				assert.IsType(t, res, []Group{}, "")
+				assert.NoError(t, err, "")
+			}
+
+			{
+				res, err := TCClient.Groups().Adversaries(s.ID).Groups().Adversaries().Retrieve()
+				CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(s.ID)+"/groups/adversaries")
+
+				assert.IsType(t, res, []Adversary{}, "")
+				assert.NoError(t, err, "")
+
+				for _, g := range res {
+					res, err := TCClient.Groups().Adversaries(s.ID).Groups().Adversaries(g.ID).Retrieve()
+					CheckResponse(t, err, "RETRIEVE /v2/groups/adversaries/"+strconv.Itoa(s.ID)+"/groups/adversaries/"+strconv.Itoa(g.ID))
+
+					assert.IsType(t, res, []Adversary{}, "")
+					assert.NoError(t, err, "")
+				}
+			}
+		}
+	}
+}

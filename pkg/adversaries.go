@@ -121,3 +121,8 @@ func (r *AdversaryResource) SecurityLabels(name ...string) *SecurityLabelsResour
 	}
 	return NewSecurityLabelsResource(r.TCResource)
 }
+
+func (r *AdversaryResource) Groups() *AssociatedGroupResource {
+	r.Path("groups")
+	return NewAssociatedGroupResource(r.TCResource)
+}

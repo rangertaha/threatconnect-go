@@ -54,7 +54,6 @@ type AssociatedGroupResource struct {
 }
 
 func NewAssociatedGroupResource(r TCResource) *AssociatedGroupResource {
-	r.Path("groups")
 	return &AssociatedGroupResource{TCResource: r}
 }
 
