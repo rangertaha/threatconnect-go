@@ -112,6 +112,3 @@ func (r *GroupResource) Documents(id ...int) *DocumentResource {
 	}
 	return NewDocumentResource(r.TCResource)
 }
-
-
-

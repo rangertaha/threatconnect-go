@@ -27,9 +27,9 @@ The following Group related endpoints are available:
 - [x]  /v2/groups/{type}/{id}/attributes/{attributeId}
 - [ ]  /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels
 - [ ]  /v2/groups/{type}/{id}/attributes/{attributeId}/securityLabels/{securityLabel}
-- [ ]  /v2/groups/{type}/{id}/groups
-- [ ]  /v2/groups/{type}/{id}/groups/{associatedGroupType}
-- [ ]  /v2/groups/{type}/{id}/groups/{associatedGroupType}/{associatedGroupId}
+- [x]  /v2/groups/{type}/{id}/groups
+- [-]  /v2/groups/{type}/{id}/groups/{associatedGroupType}
+- [-]  /v2/groups/{type}/{id}/groups/{associatedGroupType}/{associatedGroupId}
 - [ ]  /v2/groups/{type}/{id}/indicators
 - [ ]  /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}
 - [ ]  /v2/groups/{type}/{id}/indicators/{associatedIndicatorType}/{associatedIndicator}

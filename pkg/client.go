@@ -112,6 +112,15 @@ func (t *ThreatConnectClient) Groups() *GroupResource {
 	}
 }
 
+func (t *ThreatConnectClient) Indicators() *IndicatorResource {
+	return &IndicatorResource{
+		TCResource: TCResource{
+			TC:   t,
+			base: path.Join(t.Config.Version, "indicators"),
+		},
+	}
+}
+
 func (t *ThreatConnectClient) Types() *TypesResource {
 	return NewTypesResource(t)
 }

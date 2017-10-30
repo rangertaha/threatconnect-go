@@ -32,29 +32,54 @@ package threatconnect
 // 	EventDate string `json:"eventDate,omitempty"`
 // }
 
-type AssociatedGroupResponse struct {
+type AssociatedResourceResponse struct {
 	ApiCalls    int    `json:"apiCalls,omitempty"`
 	Status      string `json:"status,omitempty"`
 	ResultCount int    `json:"resultCount,omitempty"`
 	Message     string `json:"message,omitempty"`
 }
 
-type AssociatedAdversary struct {
-	ID        int    `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Owner     Owner  `json:"owner,omitempty"`
-	DateAdded string `json:"dateAdded,omitempty"`
-	WebLink   string `json:"webLink,omitempty"`
-	EventDate string `json:"eventDate,omitempty"`
+// type AssociatedAdversary struct {
+// 	ID        int    `json:"id,omitempty"`
+// 	Name      string `json:"name,omitempty"`
+// 	Owner     Owner  `json:"owner,omitempty"`
+// 	DateAdded string `json:"dateAdded,omitempty"`
+// 	WebLink   string `json:"webLink,omitempty"`
+// 	EventDate string `json:"eventDate,omitempty"`
+// }
+
+type AssociatedResource struct {
+	TCResource
+	ID int
+}
+
+func NewAssociatedResource(r TCResource) *AssociatedResource {
+	return &AssociatedResource{TCResource: r}
+}
+
+func (r *AssociatedResource) Type(name string) *AssociatedResource {
+	r.Path(name)
+	return r
+}
+
+func (r *AssociatedResource) Id(id ...int) *AssociatedResource {
+	if len(id) > 0 {
+		r.Path(id[0])
+		r.ID = id[0]
+	}
+	return r
 }
 
 type AssociatedGroupResource struct {
-	TCResource
-	group Group
+	AssociatedResource
 }
 
 func NewAssociatedGroupResource(r TCResource) *AssociatedGroupResource {
-	return &AssociatedGroupResource{TCResource: r}
+	return &AssociatedGroupResource{
+		AssociatedResource{
+			TCResource: r,
+		},
+	}
 }
 
 func (r *AssociatedGroupResource) Retrieve() ([]Group, error) {
@@ -64,66 +89,101 @@ func (r *AssociatedGroupResource) Retrieve() ([]Group, error) {
 	return group.Data.Groups, ResourceError(group.Message, res, err)
 }
 
-func (r *AssociatedGroupResource) Create() (*AssociatedGroupResponse, error) {
-	resp := &AssociatedGroupResponse{}
-	res, err := r.Response(resp).Method("POST").Request()
-	return resp, ResourceError(resp.Message, res, err)
-}
-
-func (r *AssociatedGroupResource) Type(name string) *AssociatedGroupResource {
-	r.Path(name)
-	return r
-}
-
-func (r *AssociatedGroupResource) Id(id ...int) *AssociatedGroupResource {
-	if len(id) > 0 {
-		r.Path(id[0])
-		r.group.Id = id[0]
-	}
-	return r
-}
-
 func (r *AssociatedGroupResource) Adversaries(id ...int) *AssociatedAdversaryResource {
 	r.Type("adversaries").Id(id...)
-	return &AssociatedAdversaryResource{*r}
+	return &AssociatedAdversaryResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Campaigns(id ...int) *AssociatedCampaignResource {
 	r.Type("campaigns").Id(id...)
-	return &AssociatedCampaignResource{*r}
+	return &AssociatedCampaignResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Documents(id ...int) *AssociatedDocumentResource {
 	r.Type("documents").Id(id...)
-	return &AssociatedDocumentResource{*r}
+	return &AssociatedDocumentResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Emails(id ...int) *AssociatedEmailResource {
 	r.Type("emails").Id(id...)
-	return &AssociatedEmailResource{*r}
+	return &AssociatedEmailResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Incidents(id ...int) *AssociatedIncidentsResource {
 	r.Type("incidents").Id(id...)
-	return &AssociatedIncidentsResource{*r}
+	return &AssociatedIncidentsResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Signatures(id ...int) *AssociatedSignaturesResource {
 	r.Type("signatures").Id(id...)
-	return &AssociatedSignaturesResource{*r}
+	return &AssociatedSignaturesResource{r.AssociatedResource}
 }
 
 func (r *AssociatedGroupResource) Threats(id ...int) *AssociatedThreatsResource {
 	r.Type("threats").Id(id...)
-	return &AssociatedThreatsResource{*r}
+	return &AssociatedThreatsResource{r.AssociatedResource}
+}
+
+type AssociatedIndicatorResource struct {
+	AssociatedResource
+}
+
+func NewAssociatedIndicatorResource(r TCResource) *AssociatedIndicatorResource {
+	return &AssociatedIndicatorResource{
+		AssociatedResource{
+			TCResource: r,
+		},
+	}
+}
+
+func (r *AssociatedIndicatorResource) Retrieve() ([]Indicator, error) {
+	indicator := &IndicatorResponseList{}
+	r.Response(indicator)
+	res, err := r.TCResource.Get()
+	return indicator.Data.Indicators, ResourceError(indicator.Message, res, err)
+}
+
+func (r *AssociatedIndicatorResource) Adversaries(id ...int) *AssociatedAdversaryResource {
+	r.Type("adversaries").Id(id...)
+	return &AssociatedAdversaryResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Campaigns(id ...int) *AssociatedCampaignResource {
+	r.Type("campaigns").Id(id...)
+	return &AssociatedCampaignResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Documents(id ...int) *AssociatedDocumentResource {
+	r.Type("documents").Id(id...)
+	return &AssociatedDocumentResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Emails(id ...int) *AssociatedEmailResource {
+	r.Type("emails").Id(id...)
+	return &AssociatedEmailResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Incidents(id ...int) *AssociatedIncidentsResource {
+	r.Type("incidents").Id(id...)
+	return &AssociatedIncidentsResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Signatures(id ...int) *AssociatedSignaturesResource {
+	r.Type("signatures").Id(id...)
+	return &AssociatedSignaturesResource{r.AssociatedResource}
+}
+
+func (r *AssociatedIndicatorResource) Threats(id ...int) *AssociatedThreatsResource {
+	r.Type("threats").Id(id...)
+	return &AssociatedThreatsResource{r.AssociatedResource}
 }
 
 type AssociatedAdversaryResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedAdversaryResource) Retrieve() ([]Adversary, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Adversary{grp.Data.Adversary}
 		return grps, err
@@ -145,11 +205,11 @@ func (r *AssociatedAdversaryResource) list() (*AdversaryResponseList, error) {
 }
 
 type AssociatedCampaignResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedCampaignResource) Retrieve() ([]Campaign, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Campaign{grp.Data.Campaign}
 		return grps, err
@@ -171,11 +231,11 @@ func (r *AssociatedCampaignResource) list() (*CampaignResponseList, error) {
 }
 
 type AssociatedDocumentResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedDocumentResource) Retrieve() ([]Document, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Document{grp.Data.Document}
 		return grps, err
@@ -197,11 +257,11 @@ func (r *AssociatedDocumentResource) list() (*DocumentResponseList, error) {
 }
 
 type AssociatedEmailResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedEmailResource) Retrieve() ([]Email, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Email{grp.Data.Email}
 		return grps, err
@@ -223,11 +283,11 @@ func (r *AssociatedEmailResource) list() (*EmailResponseList, error) {
 }
 
 type AssociatedIncidentsResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedIncidentsResource) Retrieve() ([]Incident, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Incident{grp.Data.Incident}
 		return grps, err
@@ -249,11 +309,11 @@ func (r *AssociatedIncidentsResource) list() (*IncidentResponseList, error) {
 }
 
 type AssociatedSignaturesResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedSignaturesResource) Retrieve() ([]Signature, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Signature{grp.Data.Signature}
 		return grps, err
@@ -275,11 +335,11 @@ func (r *AssociatedSignaturesResource) list() (*SignatureResponseList, error) {
 }
 
 type AssociatedThreatsResource struct {
-	AssociatedGroupResource
+	AssociatedResource
 }
 
 func (r *AssociatedThreatsResource) Retrieve() ([]Threat, error) {
-	if r.group.Id > 0 {
+	if r.ID > 0 {
 		grp, err := r.detail()
 		grps := []Threat{grp.Data.Threat}
 		return grps, err

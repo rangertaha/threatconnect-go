@@ -126,3 +126,8 @@ func (r *AdversaryResource) Groups() *AssociatedGroupResource {
 	r.Path("groups")
 	return NewAssociatedGroupResource(r.TCResource)
 }
+
+// func (r *AdversaryResource) Indicators() *AssociatedIndicatorResource {
+// 	r.Path("indicators")
+// 	return NewAssociatedIndicatorResource(r.TCResource)
+// }
